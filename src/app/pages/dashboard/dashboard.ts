@@ -81,10 +81,10 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   ];
 
   repartitionData: RepartitionParStatut[] = [
-    { statut: 'En attente', nombre: 1254, couleur: '#FBBF24' }, // amber-400
-    { statut: 'Partiellement Payé', nombre: 430, couleur: '#3B82F6' }, // blue-500
-    { statut: 'En Poursuite', nombre: 189, couleur: '#EF4444' }, // red-500
-    { statut: 'Soldé', nombre: 8540, couleur: '#22C55E' }, // green-500
+    { statut: 'En attente', nombre: 1254, couleur: '#FFF176' }, // amber-400
+    { statut: 'Partiellement Payé', nombre: 430, couleur: '#4FC3F7' }, // blue-500
+    { statut: 'En Poursuite', nombre: 189, couleur: '#EC407A' }, // red-500
+    { statut: 'Soldé', nombre: 8540, couleur: '#8BC34A' }, // green-500
   ];
 
   // --- Chart.js instance variables ---
@@ -132,7 +132,8 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
             legend: { display: false },
             tooltip: {
               callbacks: {
-                label: (context) => `${(context.raw as number).toLocaleString()} DZD`,
+                label: (context) =>
+                  `${(context.raw as number).toLocaleString()} DZD`,
               },
             },
           },
