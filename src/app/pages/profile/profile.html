@@ -1,0 +1,182 @@
+<!-- src/app/pages/profile/profile.component.html -->
+<div class="space-y-8 max-w-5xl mx-auto">
+  <!-- Header de la page -->
+  <div>
+    <h1 class="text-3xl font-bold text-gray-800">Mon Profil</h1>
+    <p class="mt-1 text-gray-500">
+      Gérez vos informations personnelles, votre mot de passe et consultez votre
+      activité.
+    </p>
+  </div>
+
+  <!-- Section principale avec grille -->
+  <div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
+    <!-- Colonne de gauche: Informations utilisateur et rôle -->
+    <div class="lg:col-span-1 space-y-8">
+      <!-- Carte d'identité -->
+      <div class="p-6 text-center bg-white rounded-lg">
+        <div class="relative inline-block">
+          <span
+            class="flex items-center justify-center w-24 h-24 mx-auto text-4xl font-semibold text-white bg-[#187181] rounded-full"
+          >
+            MF
+          </span>
+          <span
+            class="absolute bottom-1 right-1 block w-4 h-4 bg-green-500 border-2 border-white rounded-full"
+          ></span>
+        </div>
+        <h2 class="mt-4 text-2xl font-bold text-gray-800">M. FERKHI Mouloud</h2>
+        <p class="text-gray-500">m.ferkhi&#64;tresor.dz</p>
+        <span
+          class="inline-block px-3 py-1 mt-4 text-sm font-bold text-white bg-red-600 rounded-full"
+          >Administrateur</span
+        >
+      </div>
+
+      <!-- Carte d'information -->
+      <div class="p-6 bg-white rounded-lg">
+        <h3
+          class="text-lg font-semibold text-gray-800 border-b border-gray-200 pb-3"
+        >
+          Informations de Contact
+        </h3>
+        <form class="mt-4 space-y-4">
+          <div>
+            <label for="phone" class="block text-sm font-medium text-gray-600"
+              >Numéro de Téléphone</label
+            >
+            <input
+              type="tel"
+              id="phone"
+              value="021 55 66 77"
+              class="w-full px-4 py-2 mt-1 text-gray-800 bg-gray-100 border-transparent rounded-lg focus:outline-none focus:ring-2 focus:ring-[#187181]"
+            />
+          </div>
+          <button
+            type="submit"
+            class="w-full px-4 py-2 font-semibold text-white transition-colors rounded-lg bg-[#187181] hover:opacity-90"
+          >
+            Mettre à jour
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Colonne de droite: Sécurité et Activité -->
+    <div class="lg:col-span-2 space-y-8">
+      <!-- Carte de changement de mot de passe -->
+      <div class="p-6 bg-white rounded-lg">
+        <h3
+          class="text-lg font-semibold text-gray-800 border-b border-gray-200 pb-3"
+        >
+          Sécurité et Mot de passe
+        </h3>
+        <form class="mt-4 space-y-4">
+          <div>
+            <label
+              for="currentPassword"
+              class="block text-sm font-medium text-gray-600"
+              >Mot de passe actuel</label
+            >
+            <input
+              type="password"
+              id="currentPassword"
+              class="w-full px-4 py-2 mt-1 text-gray-800 bg-gray-100 border-transparent rounded-lg focus:outline-none focus:ring-2 focus:ring-[#187181]"
+            />
+          </div>
+          <div>
+            <label
+              for="newPassword"
+              class="block text-sm font-medium text-gray-600"
+              >Nouveau mot de passe</label
+            >
+            <input
+              type="password"
+              id="newPassword"
+              class="w-full px-4 py-2 mt-1 text-gray-800 bg-gray-100 border-transparent rounded-lg focus:outline-none focus:ring-2 focus:ring-[#187181]"
+            />
+          </div>
+          <div>
+            <label
+              for="confirmPassword"
+              class="block text-sm font-medium text-gray-600"
+              >Confirmer le nouveau mot de passe</label
+            >
+            <input
+              type="password"
+              id="confirmPassword"
+              class="w-full px-4 py-2 mt-1 text-gray-800 bg-gray-100 border-transparent rounded-lg focus:outline-none focus:ring-2 focus:ring-[#187181]"
+            />
+          </div>
+          <div class="flex justify-end">
+            <button
+              type="submit"
+              class="px-6 py-2 font-semibold text-white transition-colors rounded-lg bg-[#187181] hover:opacity-90"
+            >
+              Changer le mot de passe
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Carte de l'historique d'activité -->
+      <div class="p-6 bg-white rounded-lg">
+        <h3
+          class="text-lg font-semibold text-gray-800 border-b border-gray-200 pb-3"
+        >
+          Historique d'Activité Récente
+        </h3>
+        <ul class="mt-4 space-y-4">
+          <!-- Item d'activité 1 -->
+          <li class="flex items-start">
+            <div class="flex-shrink-0 p-2 mr-3 bg-blue-100 rounded-full">
+              <svg
+                class="w-5 h-5 text-blue-500"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M10 1a4.5 4.5 0 00-4.5 4.5V9H5a2 2 0 00-2 2v6a2 2 0 002 2h10a2 2 0 002-2v-6a2 2 0 00-2-2h-.5V5.5A4.5 4.5 0 0010 1zm3 8V5.5a3 3 0 10-6 0V9h6z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+            </div>
+            <div class="flex-grow">
+              <p class="font-medium text-gray-800">Connexion réussie</p>
+              <p class="text-sm text-gray-500">
+                Depuis l'adresse IP 192.168.1.10 - Navigateur Chrome
+              </p>
+            </div>
+            <p class="flex-shrink-0 text-sm text-gray-500">
+              Aujourd'hui à 08:32
+            </p>
+          </li>
+          <!-- Item d'activité 2 -->
+          <li class="flex items-start">
+            <div class="flex-shrink-0 p-2 mr-3 bg-green-100 rounded-full">
+              <svg
+                class="w-5 h-5 text-green-500"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+            </div>
+            <div class="flex-grow">
+              <p class="font-medium text-gray-800">Clôture de la caisse</p>
+              <p class="text-sm text-gray-500">Journée du 12/08/2024</p>
+            </div>
+            <p class="flex-shrink-0 text-sm text-gray-500">Hier à 17:05</p>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

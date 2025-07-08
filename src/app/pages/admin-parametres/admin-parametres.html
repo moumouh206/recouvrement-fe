@@ -1,0 +1,263 @@
+<div class="space-y-8">
+  <!-- Page Header -->
+  <div>
+    <h1 class="text-3xl font-bold text-gray-800">
+      Paramétrage de l'Application
+    </h1>
+    <p class="mt-1 text-gray-500">
+      Gérez les données de référence utilisées dans le module de recouvrement.
+    </p>
+  </div>
+
+  <!-- Tab Navigation -->
+  <div class="border-b border-gray-200">
+    <nav class="-mb-px flex gap-6" aria-label="Tabs">
+      <button
+        (click)="selectTab('budgets')"
+        [ngClass]="{
+          'border-[#187181] text-[#187181] font-semibold':
+            activeTab === 'budgets',
+          'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300':
+            activeTab !== 'budgets'
+        }"
+        class="px-1 py-4 text-sm font-medium border-b-2"
+      >
+        Natures de Budget
+      </button>
+      <button
+        (click)="selectTab('typesRecette')"
+        [ngClass]="{
+          'border-[#187181] text-[#187181] font-semibold':
+            activeTab === 'typesRecette',
+          'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300':
+            activeTab !== 'typesRecette'
+        }"
+        class="px-1 py-4 text-sm font-medium border-b-2"
+      >
+        Types de Recette
+      </button>
+      <button
+        (click)="selectTab('modesPaiement')"
+        [ngClass]="{
+          'border-[#187181] text-[#187181] font-semibold':
+            activeTab === 'modesPaiement',
+          'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300':
+            activeTab !== 'modesPaiement'
+        }"
+        class="px-1 py-4 text-sm font-medium border-b-2"
+      >
+        Modes de Paiement
+      </button>
+    </nav>
+  </div>
+
+  <!-- Tab Content -->
+  <div>
+    <!-- Tab: Natures de Budget -->
+    <div
+      *ngIf="activeTab === 'budgets'"
+      class="grid grid-cols-1 lg:grid-cols-3 gap-8"
+    >
+      <div class="lg:col-span-1">
+        <form
+          [formGroup]="budgetForm"
+          (ngSubmit)="addItem('budgets')"
+          class="p-6 space-y-4 bg-white rounded-lg shadow-sm"
+        >
+          <h3 class="text-lg font-semibold text-gray-800">
+            Ajouter une Nature de Budget
+          </h3>
+          <div>
+            <label
+              for="budgetLibelle"
+              class="block text-sm font-medium text-gray-700"
+              >Libellé</label
+            >
+            <input
+              id="budgetLibelle"
+              type="text"
+              formControlName="libelle"
+              class="w-full px-3 py-2 mt-1 text-gray-800 bg-gray-50 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#187181]"
+            />
+          </div>
+          <button
+            type="submit"
+            [disabled]="budgetForm.invalid"
+            class="w-full px-4 py-2 font-semibold text-white bg-[#187181] rounded-lg hover:opacity-90 disabled:opacity-50"
+          >
+            Ajouter
+          </button>
+        </form>
+      </div>
+      <div class="lg:col-span-2 bg-white rounded-lg shadow-sm overflow-hidden">
+        <table class="w-full text-sm text-left text-gray-500">
+          <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+            <tr>
+              <th class="px-6 py-3">Libellé</th>
+              <th class="px-6 py-3 text-right">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of budgets" class="border-b border-gray-200">
+              <td class="px-6 py-4 font-medium text-gray-900">
+                {{ item.libelle }}
+              </td>
+              <td class="px-6 py-4 text-right">
+                <button
+                  (click)="deleteItem('budgets', item.id)"
+                  class="text-red-500 hover:text-red-700"
+                >
+                  Supprimer
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Tab: Types de Recette -->
+    <div
+      *ngIf="activeTab === 'typesRecette'"
+      class="grid grid-cols-1 lg:grid-cols-3 gap-8"
+    >
+      <div class="lg:col-span-1">
+        <form
+          [formGroup]="typeRecetteForm"
+          (ngSubmit)="addItem('typesRecette')"
+          class="p-6 space-y-4 bg-white rounded-lg shadow-sm"
+        >
+          <h3 class="text-lg font-semibold text-gray-800">
+            Ajouter un Type de Recette
+          </h3>
+          <div>
+            <label
+              for="typeCode"
+              class="block text-sm font-medium text-gray-700"
+              >Code</label
+            ><input
+              id="typeCode"
+              type="text"
+              formControlName="code"
+              class="w-full px-3 py-2 mt-1 text-gray-800 bg-gray-50 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#187181]"
+            />
+          </div>
+          <div>
+            <label
+              for="typeLibelle"
+              class="block text-sm font-medium text-gray-700"
+              >Libellé</label
+            ><input
+              id="typeLibelle"
+              type="text"
+              formControlName="libelle"
+              class="w-full px-3 py-2 mt-1 text-gray-800 bg-gray-50 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#187181]"
+            />
+          </div>
+          <button
+            type="submit"
+            [disabled]="typeRecetteForm.invalid"
+            class="w-full px-4 py-2 font-semibold text-white bg-[#187181] rounded-lg hover:opacity-90 disabled:opacity-50"
+          >
+            Ajouter
+          </button>
+        </form>
+      </div>
+      <div class="lg:col-span-2 bg-white rounded-lg shadow-sm overflow-hidden">
+        <table class="w-full text-sm text-left text-gray-500">
+          <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+            <tr>
+              <th class="px-6 py-3">Code</th>
+              <th class="px-6 py-3">Libellé</th>
+              <th class="px-6 py-3 text-right">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              *ngFor="let item of typesRecette"
+              class="border-b border-gray-200"
+            >
+              <td class="px-6 py-4 font-medium text-gray-900">
+                {{ item.code }}
+              </td>
+              <td class="px-6 py-4">{{ item.libelle }}</td>
+              <td class="px-6 py-4 text-right">
+                <button
+                  (click)="deleteItem('typesRecette', item.id)"
+                  class="text-red-500 hover:text-red-700"
+                >
+                  Supprimer
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Tab: Modes de Paiement -->
+    <div
+      *ngIf="activeTab === 'modesPaiement'"
+      class="grid grid-cols-1 lg:grid-cols-3 gap-8"
+    >
+      <div class="lg:col-span-1">
+        <form
+          [formGroup]="modePaiementForm"
+          (ngSubmit)="addItem('modesPaiement')"
+          class="p-6 space-y-4 bg-white rounded-lg shadow-sm"
+        >
+          <h3 class="text-lg font-semibold text-gray-800">
+            Ajouter un Mode de Paiement
+          </h3>
+          <div>
+            <label
+              for="paiementLibelle"
+              class="block text-sm font-medium text-gray-700"
+              >Libellé</label
+            ><input
+              id="paiementLibelle"
+              type="text"
+              formControlName="libelle"
+              class="w-full px-3 py-2 mt-1 text-gray-800 bg-gray-50 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#187181]"
+            />
+          </div>
+          <button
+            type="submit"
+            [disabled]="modePaiementForm.invalid"
+            class="w-full px-4 py-2 font-semibold text-white bg-[#187181] rounded-lg hover:opacity-90 disabled:opacity-50"
+          >
+            Ajouter
+          </button>
+        </form>
+      </div>
+      <div class="lg:col-span-2 bg-white rounded-lg shadow-sm overflow-hidden">
+        <table class="w-full text-sm text-left text-gray-500">
+          <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+            <tr>
+              <th class="px-6 py-3">Libellé</th>
+              <th class="px-6 py-3 text-right">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              *ngFor="let item of modesPaiement"
+              class="border-b border-gray-200"
+            >
+              <td class="px-6 py-4 font-medium text-gray-900">
+                {{ item.libelle }}
+              </td>
+              <td class="px-6 py-4 text-right">
+                <button
+                  (click)="deleteItem('modesPaiement', item.id)"
+                  class="text-red-500 hover:text-red-700"
+                >
+                  Supprimer
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,71 @@
+<!-- Overlay -->
+<div class="fixed inset-0 bg-black/30 z-40" (click)="onClose()"></div>
+
+<!-- Side Panel -->
+<div class="fixed top-0 right-0 h-full w-full max-w-2xl bg-white shadow-xl z-50 flex flex-col">
+  <ng-container *ngIf="bordereau">
+    <!-- Header -->
+    <div class="flex items-start justify-between p-6 border-b border-gray-200 bg-gray-50">
+      <div>
+        <h2 class="text-xl font-bold text-gray-900">Détails du Bordereau</h2>
+        <p class="text-sm text-gray-500">N° <span class="font-mono">{{ bordereau.numero }}</span></p>
+      </div>
+      <button (click)="onClose()" class="p-1 text-gray-500 rounded-full hover:bg-gray-200">×</button>
+    </div>
+
+    <!-- Content -->
+    <div class="flex-grow p-6 space-y-6 overflow-y-auto">
+      <!-- Main Details Section -->
+      <div class="p-4 border border-gray-200 rounded-lg">
+        <h3 class="font-semibold text-gray-700 mb-4">Informations Générales</h3>
+        <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-6">
+          <div class="sm:col-span-1">
+            <dt class="text-sm font-medium text-gray-500">Ordonnateur</dt>
+            <dd class="mt-1 text-sm text-gray-900 font-semibold">{{ bordereau.ordonnateur }}</dd>
+          </div>
+          <div class="sm:col-span-1">
+            <dt class="text-sm font-medium text-gray-500">Nature du Budget</dt>
+            <dd class="mt-1 text-sm text-gray-900">{{ bordereau.natureBudget }}</dd>
+          </div>
+           <div class="sm:col-span-1">
+            <dt class="text-sm font-medium text-gray-500">Date Prise en Charge</dt>
+            <dd class="mt-1 text-sm text-gray-900">{{ bordereau.datePriseEnCharge | date:'fullDate' }}</dd>
+          </div>
+          <div class="sm:col-span-1">
+            <dt class="text-sm font-medium text-gray-500">Montant Total</dt>
+            <dd class="mt-1 text-sm text-gray-900 font-mono font-bold">{{ bordereau.montant | currency:'DZD ':'symbol':'1.2-2' }}</dd>
+          </div>
+          <div class="sm:col-span-2">
+            <dt class="text-sm font-medium text-gray-500">Statut</dt>
+            <dd class="mt-1"><span class="px-2 py-1 text-xs font-medium rounded-full ring-1 ring-inset" [ngClass]="getStatusClass(bordereau.statut)">{{ bordereau.statut }}</span></dd>
+          </div>
+        </dl>
+      </div>
+
+      <!-- Ordres de Recette Section (mocked for now) -->
+      <div class="p-4 border border-gray-200 rounded-lg">
+        <h3 class="font-semibold text-gray-700 mb-4">Ordres de Recette Inclus</h3>
+        <div class="space-y-3">
+          <div class="flex justify-between items-center p-3 bg-gray-50 rounded-md">
+            <p class="font-medium text-gray-800">OR-2024-5501</p>
+            <p class="text-sm text-gray-600">Redevable: SARL Tech Solutions</p>
+            <p class="font-mono text-sm font-semibold">500,000.00 DZD</p>
+          </div>
+           <div class="flex justify-between items-center p-3 bg-gray-50 rounded-md">
+            <p class="font-medium text-gray-800">OR-2024-5502</p>
+            <p class="text-sm text-gray-600">Redevable: Global Imports</p>
+            <p class="font-mono text-sm font-semibold">1,000,000.00 DZD</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer Actions -->
+    <div class="p-6 border-t border-gray-200 bg-gray-50">
+      <div class="flex justify-end gap-4">
+        <button (click)="onClose()" class="px-4 py-2 text-sm font-semibold text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">Fermer</button>
+        <button class="px-4 py-2 text-sm font-semibold text-white bg-[#187181] rounded-lg hover:opacity-90">Imprimer le Bordereau</button>
+      </div>
+    </div>
+  </ng-container>
+</div>

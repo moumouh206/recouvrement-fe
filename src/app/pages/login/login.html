@@ -1,0 +1,112 @@
+<div
+  class="flex items-center justify-center min-h-screen px-4 bg-gray-100 sm:px-6 lg:px-8"
+>
+  <div class="w-full max-w-4xl mx-auto">
+    <div
+      class="grid items-center grid-cols-1 gap-8 overflow-hidden bg-white rounded-lg shadow-sm md:grid-cols-2"
+    >
+      <!-- Colonne de Gauche: Formulaire de Connexion -->
+      <div class="p-8 md:p-12">
+        <!-- Logo et Titre -->
+        <div class="flex items-center gap-3 mb-8">
+          <div class="p-2 rounded-lg bg-[#e8f0f1]">
+            <svg
+              class="w-8 h-8 text-[#187181]"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.5 0l3.5 0M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+          </div>
+          <h1 class="text-2xl font-bold text-gray-800">
+            Système de Recouvrement
+          </h1>
+        </div>
+
+        <h2 class="text-3xl font-bold tracking-tight text-gray-900">
+          Accès sécurisé
+        </h2>
+        <p class="mt-2 text-gray-500">
+          Veuillez vous authentifier pour accéder au module de gestion des
+          recouvrements.
+        </p>
+
+        <!-- Formulaire -->
+        <form class="mt-8 space-y-6">
+          <!-- Champ Nom d'utilisateur -->
+          <div>
+            <label
+              for="username"
+              class="block text-sm font-medium text-gray-700"
+              >Nom d'utilisateur</label
+            >
+            <div class="mt-1">
+              <input
+                id="username"
+                name="username"
+                type="text"
+                required
+                class="block w-full px-3 py-2 placeholder-gray-400 bg-gray-50 border border-gray-300 rounded-md shadow-sm appearance-none focus:outline-none focus:ring-[#187181] focus:border-[#187181] sm:text-sm"
+              />
+            </div>
+          </div>
+
+          <!-- Champ Mot de passe -->
+          <div>
+            <label
+              for="password"
+              class="block text-sm font-medium text-gray-700"
+              >Mot de passe</label
+            >
+            <div class="mt-1">
+              <input
+                id="password"
+                name="password"
+                type="password"
+                required
+                class="block w-full px-3 py-2 placeholder-gray-400 bg-gray-50 border border-gray-300 rounded-md shadow-sm appearance-none focus:outline-none focus:ring-[#187181] focus:border-[#187181] sm:text-sm"
+              />
+            </div>
+          </div>
+
+          <!-- Bouton de connexion -->
+          <div>
+            <button
+              type="button"
+              [routerLink]="['/dashboard']"
+              class="flex justify-center w-full px-4 py-3 text-sm font-semibold text-white border border-transparent rounded-md shadow-sm bg-[#187181] hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#187181]"
+            >
+              Se connecter
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Colonne de Droite: Image et Citation -->
+      <div class="relative hidden h-full md:block">
+        <img
+          class="mx-auto mt-8"
+          src="https://www.mf.gov.dz/templates/t3_bs3_blank/images/logo.png"
+          alt="Logo du Ministère des Finances"
+        />
+        <div
+          class="absolute inset-0 bg-gradient-to-t from-[#187181]/80 to-transparent"
+        ></div>
+        <div class="absolute bottom-0 left-0 p-8 text-white">
+          <h3 class="text-2xl font-bold">Gestion des Créances de l'État</h3>
+          <p class="mt-2 text-gray-200">
+            Assurer le recouvrement efficace et rigoureux des recettes pour le
+            Trésor Public.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

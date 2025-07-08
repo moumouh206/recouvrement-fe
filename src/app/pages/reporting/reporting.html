@@ -1,0 +1,130 @@
+<div class="space-y-8">
+  <!-- Page Header -->
+  <div>
+    <h1 class="text-3xl font-bold text-gray-800">Éditions & Rapports</h1>
+    <p class="mt-1 text-gray-500">
+      Générez les états et documents officiels du module de recouvrement.
+    </p>
+  </div>
+
+  <!-- Reports Grid, grouped by category -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+    <div
+      *ngFor="let category of reportCategories"
+      class="p-6 bg-white rounded-lg shadow-sm space-y-4"
+    >
+      <h2
+        class="text-xl font-semibold text-gray-800 border-b border-gray-200 pb-3"
+      >
+        {{ category }}
+      </h2>
+
+      <!-- List of reports in this category -->
+      <div
+        *ngFor="let report of getReportsByCategory(category)"
+        class="p-4 bg-gray-50 rounded-lg"
+      >
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="font-semibold text-gray-700">
+              {{ report.title }}
+              <span class="text-xs text-gray-500">({{ report.code }})</span>
+            </h3>
+            <p class="text-sm text-gray-500">{{ report.description }}</p>
+          </div>
+          <button
+            (click)="openModal(report)"
+            class="flex-shrink-0 px-4 py-2 text-sm font-semibold text-white transition-colors rounded-lg bg-[#187181] hover:opacity-90"
+          >
+            Générer
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Dialog for Report Parameters -->
+<div
+  *ngIf="isModalOpen && selectedReport"
+  class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 transition-opacity"
+>
+  <div
+    class="relative w-full max-w-lg p-8 bg-white rounded-lg shadow-xl"
+    (click)="$event.stopPropagation()"
+  >
+    <!-- Modal Header -->
+    <div class="flex items-start justify-between pb-4 border-b border-gray-200">
+      <div>
+        <h3 class="text-xl font-semibold text-gray-900">
+          Paramètres du Rapport
+        </h3>
+        <p class="text-sm text-gray-500">{{ selectedReport.title }}</p>
+      </div>
+      <button
+        (click)="closeModal()"
+        class="p-1 text-gray-400 rounded-full hover:bg-gray-200 hover:text-gray-600"
+      >
+        ×
+      </button>
+    </div>
+
+    <!-- Dynamic Form -->
+    <form [formGroup]="reportForm" class="mt-6 space-y-4">
+      <div *ngFor="let param of selectedReport.parameters">
+        <label
+          [for]="param.name"
+          class="block text-sm font-medium text-gray-700"
+          >{{ param.label
+          }}<span *ngIf="param.required" class="text-red-500">*</span></label
+        >
+
+        <input
+          *ngIf="param.type === 'date'"
+          [id]="param.name"
+          [formControlName]="param.name"
+          type="date"
+          class="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#187181]"
+        />
+
+        <input
+          *ngIf="param.type === 'text'"
+          [id]="param.name"
+          [formControlName]="param.name"
+          type="text"
+          class="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#187181]"
+        />
+
+        <select
+          *ngIf="param.type === 'select'"
+          [id]="param.name"
+          [formControlName]="param.name"
+          class="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#187181]"
+        >
+          <option value="" disabled>Sélectionner...</option>
+          <option *ngFor="let opt of param.options" [value]="opt">
+            {{ opt }}
+          </option>
+        </select>
+      </div>
+    </form>
+
+    <!-- Modal Footer -->
+    <div class="flex justify-end gap-4 pt-6 mt-6 border-t border-gray-200">
+      <button
+        (click)="generateReport('PDF')"
+        [disabled]="reportForm.invalid"
+        class="px-5 py-2 font-semibold text-white bg-red-700 rounded-lg hover:bg-red-800 disabled:opacity-50"
+      >
+        Générer PDF
+      </button>
+      <button
+        (click)="generateReport('Excel')"
+        [disabled]="reportForm.invalid"
+        class="px-5 py-2 font-semibold text-white bg-green-700 rounded-lg hover:bg-green-800 disabled:opacity-50"
+      >
+        Générer Excel
+      </button>
+    </div>
+  </div>
+</div>

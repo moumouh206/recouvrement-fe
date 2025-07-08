@@ -1,0 +1,420 @@
+<div class="space-y-8">
+  <!-- Page Header -->
+  <div>
+    <h1 class="text-3xl font-bold text-gray-800">
+      Recouvrement des Ordres de Recette
+    </h1>
+    <p class="mt-1 text-gray-500">
+      Recherchez un ordre de recette pour enregistrer un paiement.
+    </p>
+  </div>
+
+  <!-- Search Form Section -->
+  <div class="p-6 bg-white rounded-lg shadow-sm">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
+      <!-- Search Term -->
+      <div class="md:col-span-2">
+        <label for="search" class="block text-sm font-medium text-gray-700"
+          >Rechercher (N° Ordre, Redevable, NIF)</label
+        >
+        <input
+          type="text"
+          id="search"
+          [(ngModel)]="searchCriteria.terme"
+          (keyup.enter)="performSearch()"
+          placeholder="Entrez un terme de recherche..."
+          class="w-full px-3 py-2 mt-1 text-gray-800 bg-gray-50 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#187181]"
+        />
+      </div>
+      <!-- Status Filter -->
+      <div>
+        <label for="status" class="block text-sm font-medium text-gray-700"
+          >Statut</label
+        >
+        <select
+          id="status"
+          [(ngModel)]="searchCriteria.statut"
+          (change)="performSearch()"
+          class="w-full px-3 py-2 mt-1 text-gray-800 bg-gray-50 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#187181]"
+        >
+          <option value="">Tous les statuts</option>
+          <option value="En attente de paiement">En attente de paiement</option>
+          <option value="Partiellement payé">Partiellement payé</option>
+          <option value="Échéancier Actif">Échéancier Actif</option>
+          <option value="En poursuite">En poursuite</option>
+          <option value="Soldé">Soldé</option>
+        </select>
+      </div>
+    </div>
+    <!-- Action Buttons -->
+    <div class="flex gap-4 mt-6 pt-4 border-t border-gray-200">
+      <button
+        (click)="performSearch()"
+        class="flex items-center justify-center gap-2 px-6 py-2 font-semibold text-white transition-colors rounded-lg bg-[#187181] hover:opacity-90"
+      >
+        <svg
+          class="w-5 h-5"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="2"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
+          />
+        </svg>
+        <span>Rechercher</span>
+      </button>
+      <button
+        (click)="resetSearch()"
+        class="px-6 py-2 font-semibold text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200"
+      >
+        Réinitialiser
+      </button>
+    </div>
+  </div>
+
+  <!-- Search Results Section -->
+  <div class="overflow-x-auto bg-white rounded-lg shadow-sm">
+    <table class="w-full text-sm text-left text-gray-500">
+      <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+        <tr>
+          <th scope="col" class="px-6 py-3">N° Ordre</th>
+          <th scope="col" class="px-6 py-3">Redevable (Débiteur)</th>
+          <th scope="col" class="px-6 py-3 text-right">Montant Initial</th>
+          <th scope="col" class="px-6 py-3 text-right">Reste à Payer</th>
+          <th scope="col" class="px-6 py-3 text-center">Statut</th>
+          <th scope="col" class="px-6 py-3 text-center">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          *ngFor="let ordre of searchResults"
+          class="bg-white border-b border-gray-200 hover:bg-gray-50"
+        >
+          <td class="px-6 py-4 font-medium text-gray-900">
+            {{ ordre.numeroOrdre }}
+          </td>
+          <td class="px-6 py-4">
+            <div>{{ ordre.redevable }}</div>
+            <div class="text-xs text-gray-500">NIF: {{ ordre.nif }}</div>
+          </td>
+          <td class="px-6 py-4 text-right font-mono">
+            {{ ordre.montantInitial | currency : "DZD " : "symbol" : "1.2-2" }}
+          </td>
+          <td class="px-6 py-4 text-right font-mono font-bold text-red-600">
+            {{ getResteAPayer(ordre) | currency : "DZD " : "symbol" : "1.2-2" }}
+          </td>
+          <td class="px-6 py-4 text-center">
+            <span
+              class="px-2 py-1 text-xs font-medium rounded-full"
+              [ngClass]="getStatusClass(ordre.statut)"
+              >{{ ordre.statut }}</span
+            >
+          </td>
+          <td class="px-6 py-4 text-center">
+            <div class="flex items-center justify-center gap-2">
+              <button
+                (click)="openPaiementModal(ordre)"
+                [disabled]="ordre.statut === 'Soldé'"
+                class="px-3 py-1 text-sm font-semibold text-white bg-green-600 rounded-lg hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+              >
+                Encaisser
+              </button>
+              <button
+                (click)="openEcheancierModal(ordre)"
+                [disabled]="
+                  ordre.statut === 'Soldé' ||
+                  ordre.statut === 'Échéancier Actif'
+                "
+                title="Créer un plan de paiement"
+                class="p-2 text-gray-500 rounded-lg hover:bg-gray-200 disabled:text-gray-300 disabled:cursor-not-allowed"
+              >
+                <svg
+                  class="w-5 h-5"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0h18M12 12.75h.008v.008H12v-.008z"
+                  />
+                </svg>
+              </button>
+            </div>
+          </td>
+        </tr>
+        <!-- Empty States -->
+        <tr *ngIf="searchResults.length === 0 && searchPerformed">
+          <td colspan="6" class="px-6 py-12 text-center text-gray-500">
+            Aucun résultat trouvé pour votre recherche.
+          </td>
+        </tr>
+        <tr *ngIf="!searchPerformed">
+          <td colspan="6" class="px-6 py-12 text-center text-gray-500">
+            Veuillez lancer une recherche pour afficher les ordres de recette.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Modal Dialog for Paiement -->
+<div
+  *ngIf="isPaiementModalOpen"
+  class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+>
+  <div
+    class="relative w-full max-w-2xl p-8 bg-white rounded-lg shadow-xl"
+    (click)="$event.stopPropagation()"
+  >
+    <!-- Modal Header -->
+    <div class="flex items-start justify-between pb-4 border-b border-gray-200">
+      <div>
+        <h3 class="text-xl font-semibold text-gray-900">
+          Encaisser un Paiement
+        </h3>
+        <p *ngIf="selectedOrdre" class="text-sm text-gray-500">
+          Ordre N°:
+          <span class="font-bold">{{ selectedOrdre.numeroOrdre }}</span>
+        </p>
+      </div>
+      <button
+        (click)="closePaiementModal()"
+        class="p-1 text-gray-400 rounded-full hover:bg-gray-200 hover:text-gray-600"
+      >
+        ×
+      </button>
+    </div>
+
+    <div
+      *ngIf="selectedOrdre"
+      class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6"
+    >
+      <!-- Left side: New Payment Form -->
+      <form (ngSubmit)="submitPaiement()" class="space-y-4">
+        <h4 class="font-semibold text-gray-700">Nouveau Paiement</h4>
+        <div class="p-4 bg-gray-50 rounded-lg">
+          <p class="text-sm text-gray-500">Reste à payer</p>
+          <p class="font-bold text-red-600">
+            {{
+              getResteAPayer(selectedOrdre)
+                | currency : "DZD" : "symbol" : "1.2-2"
+            }}
+          </p>
+        </div>
+        <div>
+          <label
+            for="montantPaiement"
+            class="block text-sm font-medium text-gray-700"
+            >Montant du Paiement</label
+          >
+          <input
+            type="number"
+            id="montantPaiement"
+            [(ngModel)]="paiementModel.montant"
+            name="montant"
+            class="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#187181]"
+          />
+        </div>
+        <div>
+          <label
+            for="modePaiement"
+            class="block text-sm font-medium text-gray-700"
+            >Mode de Paiement</label
+          >
+          <select
+            id="modePaiement"
+            [(ngModel)]="paiementModel.modePaiement"
+            name="mode"
+            class="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#187181]"
+          >
+            <option>Espèces</option>
+            <option>Chèque</option>
+            <option>Virement</option>
+            <option>Versement</option>
+          </select>
+        </div>
+        <div>
+          <label for="reference" class="block text-sm font-medium text-gray-700"
+            >Référence (N° Chèque, etc.)</label
+          >
+          <input
+            type="text"
+            id="reference"
+            [(ngModel)]="paiementModel.reference"
+            name="ref"
+            class="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#187181]"
+          />
+        </div>
+        <div class="pt-4 border-t border-gray-200">
+          <button
+            type="submit"
+            [disabled]="selectedOrdre.statut === 'Soldé'"
+            class="w-full px-6 py-2 font-semibold text-white bg-[#187181] rounded-lg hover:opacity-90 disabled:opacity-50"
+          >
+            Enregistrer le Paiement
+          </button>
+        </div>
+      </form>
+      <!-- Right side: Payment History -->
+      <div class="space-y-4">
+        <h4 class="font-semibold text-gray-700">Historique des Paiements</h4>
+        <div class="h-64 overflow-y-auto pr-2 space-y-3">
+          <div
+            *ngIf="selectedOrdre.paiements.length === 0"
+            class="flex items-center justify-center h-full text-center text-sm text-gray-500 bg-gray-50 rounded-md"
+          >
+            Aucun paiement enregistré pour cet ordre.
+          </div>
+          <div
+            *ngFor="let p of selectedOrdre.paiements"
+            class="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-md"
+          >
+            <div>
+              <p class="font-medium text-gray-800">
+                {{ p.montant | currency : "DZD" : "symbol" : "1.2-2" }}
+              </p>
+              <p class="text-xs text-gray-500">
+                {{ p.datePaiement | date : "dd/MM/yyyy" }} via
+                {{ p.modePaiement }}
+              </p>
+              <p *ngIf="p.reference" class="text-xs text-gray-500">
+                Réf: {{ p.reference }}
+              </p>
+            </div>
+            <button
+              (click)="annulerPaiement(p.id)"
+              title="Annuler ce paiement"
+              class="p-1 text-red-500 rounded-full hover:bg-red-100"
+            >
+              <svg
+                class="w-5 h-5"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Modal Footer -->
+    <div class="flex justify-end pt-6 mt-6 border-t border-gray-200">
+      <button
+        type="button"
+        (click)="closePaiementModal()"
+        class="px-6 py-2 font-semibold text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200"
+      >
+        Fermer
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Echeancier Modal -->
+<div
+  *ngIf="isEcheancierModalOpen && selectedOrdre"
+  class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 transition-opacity"
+>
+  <div
+    class="relative w-full max-w-lg p-8 bg-white rounded-lg shadow-xl"
+    (click)="$event.stopPropagation()"
+  >
+    <!-- Modal Header -->
+    <div class="flex items-start justify-between pb-4 border-b border-gray-200">
+      <div>
+        <h3 class="text-xl font-semibold text-gray-900">
+          Créer un Échéancier de Paiement
+        </h3>
+        <p class="text-sm text-gray-500">
+          Ordre N°:
+          <span class="font-bold">{{ selectedOrdre.numeroOrdre }}</span>
+        </p>
+      </div>
+      <button
+        (click)="closeEcheancierModal()"
+        class="p-1 text-gray-400 rounded-full hover:bg-gray-200 hover:text-gray-600"
+      >
+        ×
+      </button>
+    </div>
+    <!-- Modal Body -->
+    <form
+      [formGroup]="echeancierForm"
+      (ngSubmit)="submitEcheancier()"
+      class="mt-6 space-y-4"
+    >
+      <div class="p-4 bg-gray-50 rounded-lg">
+        <p class="text-sm text-gray-600">
+          Le montant total à échelonner est de
+          <span class="font-bold text-red-600">{{
+            getResteAPayer(selectedOrdre)
+              | currency : "DZD" : "symbol" : "1.2-2"
+          }}</span
+          >.
+        </p>
+      </div>
+      <div>
+        <label
+          for="nombreEcheances"
+          class="block text-sm font-medium text-gray-700"
+          >Nombre de versements (2-12)</label
+        >
+        <input
+          type="number"
+          id="nombreEcheances"
+          formControlName="nombreEcheances"
+          min="2"
+          max="12"
+          class="w-full px-3 py-2 mt-1 text-gray-800 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#187181]"
+        />
+      </div>
+      <div>
+        <label
+          for="datePremiereEcheance"
+          class="block text-sm font-medium text-gray-700"
+          >Date de la première échéance</label
+        >
+        <input
+          type="date"
+          id="datePremiereEcheance"
+          formControlName="datePremiereEcheance"
+          class="w-full px-3 py-2 mt-1 text-gray-800 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#187181]"
+        />
+      </div>
+      <div class="flex justify-end gap-4 pt-6 mt-2 border-t border-gray-200">
+        <button
+          type="button"
+          (click)="closeEcheancierModal()"
+          class="px-6 py-2 font-semibold text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200"
+        >
+          Annuler
+        </button>
+        <button
+          type="submit"
+          [disabled]="echeancierForm.invalid"
+          class="px-6 py-2 font-semibold text-white bg-[#187181] rounded-lg hover:opacity-90 disabled:opacity-50"
+        >
+          Confirmer et Créer
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

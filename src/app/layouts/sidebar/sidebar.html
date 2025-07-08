@@ -1,0 +1,282 @@
+<!-- src/app/layouts/sidebar/sidebar.component.html -->
+<aside
+  class="flex flex-col w-64 h-screen px-4 py-8 overflow-y-auto bg-[#187181]"
+>
+  <!-- Logo -->
+  <a [routerLink]="['/dashboard']" class="flex items-center px-2">
+    <svg
+      class="w-8 h-8 text-white"
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke-width="1.5"
+      stroke="currentColor"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.5 0l3.5 0M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+      />
+    </svg>
+    <span class="ml-3 text-xl font-bold text-white">Recouvrement</span>
+  </a>
+
+  <!-- Menu de Navigation -->
+  <div class="flex flex-col justify-between flex-1 mt-8">
+    <nav class="-mx-2 space-y-2">
+      <!-- Tableau de bord -->
+      <a
+        class="flex items-center justify-start px-4 py-2.5 text-white transition-colors duration-300 transform rounded-lg hover:bg-[#2aa0b5]"
+        [routerLink]="['/dashboard']"
+        routerLinkActive="bg-[#1d95ab] font-semibold"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        <svg
+          class="w-5 h-5"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M3.75 3v18h16.5V3H3.75zM9 13.5h6.75M9 17.25h6.75M5.25 6h.008v.008H5.25V6zm.75 0h.008v.008H6V6zm.75 0h.008v.008H6.75V6z"
+          />
+        </svg>
+        <span class="mx-4 font-medium">Tableau de Bord</span>
+      </a>
+      <!--  NEW LINK FOR REDEVABLES -->
+      <a
+        class="flex items-center justify-start px-4 py-2.5 text-white transition-colors duration-300 transform rounded-lg hover:bg-[#2aa0b5]"
+        [routerLink]="['/redevables']"
+        routerLinkActive="bg-[#1d95ab] font-semibold"
+      >
+        <svg
+          class="w-5 h-5"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-4.66c.12-.144.239-.29.354-.442M7.884 15.046A9.337 9.337 0 008.624 21a9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493c-1.426.002-2.823.32-4.001.952 1.123-.345 2.318-.585 3.54-.585z"
+          />
+        </svg>
+        <span class="mx-4 font-medium">Gestion Redevables</span>
+      </a>
+      <!-- Menu: Prise en Charge -->
+      <div>
+        <button
+          (click)="togglePriseEnChargeMenu()"
+          class="w-full flex items-center justify-between px-4 py-2.5 text-white transition-colors duration-300 transform rounded-lg hover:bg-[#2aa0b5]"
+        >
+          <span class="flex items-center">
+            <svg
+              class="w-5 h-5"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m.75 12l3 3m0 0l3-3m-3 3v-6m-1.5-9H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
+              />
+            </svg>
+            <span class="mx-4 font-medium">Prise en Charge</span>
+          </span>
+          <svg
+            class="w-5 h-5 transition-transform duration-200"
+            [class.rotate-180]="isPriseEnChargeMenuOpen"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+              clip-rule="evenodd"
+            />
+          </svg>
+        </button>
+        <div *ngIf="isPriseEnChargeMenuOpen" class="mt-1 space-y-1 pl-8">
+          <a
+            class="flex items-center px-4 py-2 text-white/90 rounded-lg hover:bg-[#2aa0b5] hover:text-white"
+            [routerLink]="['/bordereaux']"
+            routerLinkActive="bg-[#1d95ab] !text-white font-semibold"
+            >Lister les Bordereaux</a
+          >
+          <a
+            class="flex items-center px-4 py-2 text-white/90 rounded-lg hover:bg-[#2aa0b5] hover:text-white"
+            [routerLink]="['/bordereaux/nouveau']"
+            routerLinkActive="bg-[#1d95ab] !text-white font-semibold"
+            >Créer un Bordereau</a
+          >
+        </div>
+      </div>
+
+      <!-- Menu: Recouvrement -->
+      <a
+        class="flex items-center justify-start px-4 py-2.5 text-white transition-colors duration-300 transform rounded-lg hover:bg-[#2aa0b5]"
+        [routerLink]="['/recouvrement/recherche']"
+        routerLinkActive="bg-[#1d95ab] font-semibold"
+      >
+        <svg
+          class="w-5 h-5"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.75A.75.75 0 013 4.5h.75m0 0H21m-9 12.75h5.25m-5.25 0h-4.5m5.25 0V18s0-2.25-2.25-2.25H9.75S7.5 15.75 7.5 18v.75m12-3V9A2.25 2.25 0 0017.25 6.75H9.75A2.25 2.25 0 007.5 9v.75m12 3h-3.375"
+          />
+        </svg>
+        <span class="mx-4 font-medium">Recouvrement</span>
+      </a>
+
+      <!-- Menu: Poursuites -->
+      <a
+        class="flex items-center justify-start px-4 py-2.5 text-white transition-colors duration-300 transform rounded-lg hover:bg-[#2aa0b5]"
+        [routerLink]="['/poursuites']"
+        routerLinkActive="bg-[#1d95ab] font-semibold"
+      >
+        <svg
+          class="w-5 h-5"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M3.75 21h16.5M4.5 3h15M5.25 3v18M18.75 3v18M9 21v-9.563a4.5 4.5 0 012.47-4.01L15 5.25M9 21l-1.5-1.5M15 5.25l1.5 1.5M12 21v-1.5"
+          />
+        </svg>
+        <span class="mx-4 font-medium">Suivi des Poursuites</span>
+      </a>
+
+      <!-- Menu: Recettes sans titre -->
+      <a
+        class="flex items-center justify-start px-4 py-2.5 text-white transition-colors duration-300 transform rounded-lg hover:bg-[#2aa0b5]"
+        [routerLink]="['/recettes-sans-titre']"
+        routerLinkActive="bg-[#1d95ab] font-semibold"
+      >
+        <svg
+          class="w-5 h-5"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75c0-.231-.035-.454-.1-.664M6.75 7.5h10.5a2.25 2.25 0 012.25 2.25v7.5a2.25 2.25 0 01-2.25 2.25H6.75a2.25 2.25 0 01-2.25-2.25v-7.5a2.25 2.25 0 012.25-2.25z"
+          />
+        </svg>
+        <span class="mx-4 font-medium">Recettes sans Titre</span>
+      </a>
+
+      <!-- Menu: Administration -->
+      <div>
+        <button
+          (click)="toggleAdministrationMenu()"
+          class="w-full flex items-center justify-between px-4 py-2.5 text-white transition-colors duration-300 transform rounded-lg hover:bg-[#2aa0b5]"
+        >
+          <span class="flex items-center">
+            <svg
+              class="w-5 h-5"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.93.398.164.855.142 1.205-.108l.737-.527c.48-.342 1.12-.172 1.413.31l.577.997c.294.502.12.982-.358 1.25l-.74.532c-.35.25-.56.67-.56 1.104v.058c0 .434.21.854.56 1.104l.74.532c.478.268.652.748.358 1.25l-.577.997c-.293.502-.934.652-1.413.31l-.737-.527c-.35-.266-.807-.272-1.205-.108-.396.166-.71.506-.78.93l-.149.894c-.09.542-.56.94-1.11.94h-1.093c-.55 0-1.02-.398-1.11-.94l-.149-.894c-.07-.424-.384-.764-.78-.93-.398-.164-.855-.142-1.205.108l-.737.527c-.48.342-1.12-.172-1.413-.31l-.577-.997c-.294-.502-.12-.982.358-1.25l.74-.532c.35-.25.56-.67-.56-1.104v-.058c0-.434-.21-.854-.56-1.104l-.74-.532c-.478-.268-.652-.748-.358-1.25l.577.997c.293.502.934.652 1.413.31l.737.527c.35.266.807.272 1.205.108.396.166.71.506.78.93l.149.894z"
+              />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+              />
+            </svg>
+            <span class="mx-4 font-medium">Administration</span>
+          </span>
+          <svg
+            class="w-5 h-5 transition-transform duration-200"
+            [class.rotate-180]="isAdministrationMenuOpen"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+              clip-rule="evenodd"
+            />
+          </svg>
+        </button>
+        <div *ngIf="isAdministrationMenuOpen" class="mt-1 space-y-1 pl-8">
+          <a
+            class="flex items-center px-4 py-2 text-white/90 rounded-lg hover:bg-[#2aa0b5] hover:text-white"
+            [routerLink]="['/admin/parametres']"
+            routerLinkActive="bg-[#1d95ab] !text-white font-semibold"
+            >Paramétrage</a
+          >
+          <a
+            class="flex items-center px-4 py-2 text-white/90 rounded-lg hover:bg-[#2aa0b5] hover:text-white"
+            [routerLink]="['/admin/cloture']"
+            routerLinkActive="bg-[#1d95ab] !text-white font-semibold"
+            >Clôture Annuelle</a
+          >
+          <a
+            class="flex items-center px-4 py-2 text-white/90 rounded-lg hover:bg-[#2aa0b5] hover:text-white"
+            [routerLink]="['/admin/retablissement']"
+            routerLinkActive="bg-[#1d95ab] !text-white font-semibold"
+            >Rétablissement Crédit</a
+          >
+        </div>
+      </div>
+
+      <!-- Reporting / Éditions -->
+      <a
+        class="flex items-center justify-start px-4 py-2.5 text-white transition-colors duration-300 transform rounded-lg hover:bg-[#2aa0b5]"
+        [routerLink]="['/reporting']"
+        routerLinkActive="bg-[#1d95ab] font-semibold"
+      >
+        <svg
+          class="w-5 h-5"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
+          />
+        </svg>
+        <span class="mx-4 font-medium">Éditions & Rapports</span>
+      </a>
+    </nav>
+  </div>
+</aside>

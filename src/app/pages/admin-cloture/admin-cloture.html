@@ -1,0 +1,89 @@
+<div class="space-y-8">
+  <!-- Page Header -->
+  <div>
+    <h1 class="text-3xl font-bold text-gray-800">
+      Clôture Annuelle de l'Exercice
+    </h1>
+    <p class="mt-1 text-gray-500">
+      Lancez le processus de fin d'année pour clôturer l'exercice et préparer le
+      suivant.
+    </p>
+  </div>
+
+  <div class="max-w-3xl p-8 bg-white rounded-lg shadow-sm">
+    <div class="flex items-center gap-4">
+      <div
+        class="flex-shrink-0 flex items-center justify-center w-12 h-12 bg-red-100 rounded-full"
+      >
+        <svg
+          class="w-6 h-6 text-red-600"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"
+          />
+        </svg>
+      </div>
+      <div>
+        <h2 class="text-xl font-bold text-red-800">Action Irréversible</h2>
+        <p class="mt-1 text-gray-600">
+          La clôture de l'exercice est une opération critique qui ne peut pas
+          être annulée. Elle affectera tous les ordres de recette en cours et
+          générera les soldes de reprise pour le nouvel exercice. Assurez-vous
+          que toutes les opérations journalières sont terminées et validées.
+        </p>
+      </div>
+    </div>
+
+    <div class="mt-8 pt-6 border-t border-gray-200">
+      <button
+        (click)="lancerClotureAnnuelle()"
+        [disabled]="isProcessing || clotureDone"
+        class="w-full flex items-center justify-center gap-3 px-6 py-4 text-lg font-semibold text-white bg-red-600 rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:bg-gray-400 disabled:cursor-not-allowed"
+      >
+        <!-- Spinner Icon -->
+        <svg
+          *ngIf="isProcessing"
+          class="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <circle
+            class="opacity-25"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            stroke-width="4"
+          ></circle>
+          <path
+            class="opacity-75"
+            fill="currentColor"
+            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+          ></path>
+        </svg>
+
+        <span *ngIf="!isProcessing && !clotureDone"
+          >Lancer la Clôture Annuelle</span
+        >
+        <span *ngIf="isProcessing">Traitement en cours...</span>
+        <span *ngIf="clotureDone">Clôture Effectuée</span>
+      </button>
+
+      <p
+        *ngIf="clotureDone"
+        class="mt-4 text-center text-green-700 font-semibold"
+      >
+        Le processus de clôture est terminé. Vous pouvez maintenant travailler
+        sur le nouvel exercice.
+      </p>
+    </div>
+  </div>
+</div>

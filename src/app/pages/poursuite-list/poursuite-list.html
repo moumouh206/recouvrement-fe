@@ -1,0 +1,267 @@
+<div class="space-y-8">
+  <!-- Page Header -->
+  <div>
+    <h1 class="text-3xl font-bold text-gray-800">Suivi des Poursuites</h1>
+    <p class="mt-1 text-gray-500">
+      Gérez les ordres de recette en retard et lancez les procédures de
+      poursuite.
+    </p>
+  </div>
+
+  <!-- Filters Section -->
+  <div class="p-4 bg-white rounded-lg shadow-sm">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        <label for="search" class="block text-sm font-medium text-gray-700"
+          >Rechercher (N° Ordre, Redevable, NIF)</label
+        >
+        <input
+          type="text"
+          id="search"
+          [(ngModel)]="filterTerm"
+          (ngModelChange)="applyFilters()"
+          placeholder="Entrez un terme de recherche..."
+          class="w-full px-3 py-2 mt-1 text-gray-800 bg-gray-50 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#187181]"
+        />
+      </div>
+      <div>
+        <label for="etape" class="block text-sm font-medium text-gray-700"
+          >Étape de Poursuite</label
+        >
+        <select
+          id="etape"
+          [(ngModel)]="filterEtape"
+          (ngModelChange)="applyFilters()"
+          class="w-full px-3 py-2 mt-1 text-gray-800 bg-gray-50 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#187181]"
+        >
+          <option value="">Toutes les étapes</option>
+          <option value="À traiter">À traiter</option>
+          <option value="Sommation envoyée">Sommation envoyée</option>
+          <option value="ATD émis">ATD émis</option>
+          <option value="Mainlevée émise">Mainlevée émise</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Table Section -->
+  <div class="overflow-x-auto bg-white rounded-lg shadow-sm">
+    <table class="w-full text-sm text-left text-gray-500">
+      <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+        <tr>
+          <th scope="col" class="px-6 py-3">N° Ordre</th>
+          <th scope="col" class="px-6 py-3">Redevable</th>
+          <th scope="col" class="px-6 py-3 text-right">
+            Montant Restant (DZD)
+          </th>
+          <th scope="col" class="px-6 py-3 text-center">Jours de Retard</th>
+          <th scope="col" class="px-6 py-3 text-center">Étape Actuelle</th>
+          <th scope="col" class="px-6 py-3 text-center">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          *ngFor="let p of filteredPoursuites"
+          class="bg-white border-b border-gray-200 hover:bg-gray-50"
+        >
+          <td class="px-6 py-4 font-medium text-gray-900">
+            {{ p.numeroOrdre }}
+          </td>
+          <td class="px-6 py-4">
+            <div>{{ p.redevable }}</div>
+            <div class="text-xs text-gray-500">NIF: {{ p.nif }}</div>
+          </td>
+          <td class="px-6 py-4 text-right font-mono font-bold">
+            {{ p.montantRestant | currency : "DZD " : "symbol" : "1.2-2" }}
+          </td>
+          <td class="px-6 py-4 text-center text-red-600 font-semibold">
+            {{ p.joursDeRetard }}
+          </td>
+          <td class="px-6 py-4 text-center">
+            <span
+              class="px-2 py-1 text-xs font-medium rounded-full"
+              [ngClass]="getEtapeClass(p.etapeActuelle)"
+              >{{ p.etapeActuelle }}</span
+            >
+          </td>
+          <td class="px-6 py-4 text-center">
+            <button
+              (click)="openActionModal(p)"
+              class="px-3 py-1 text-sm font-semibold text-white bg-[#187181] rounded-lg hover:opacity-90"
+            >
+              Gérer
+            </button>
+          </td>
+        </tr>
+        <tr *ngIf="filteredPoursuites.length === 0">
+          <td colspan="6" class="px-6 py-12 text-center text-gray-500">
+            Aucun ordre en poursuite ne correspond à vos filtres.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Modal Dialog for Actions -->
+<div
+  *ngIf="isModalOpen && selectedPoursuite"
+  class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 transition-opacity"
+>
+  <div
+    class="relative w-full max-w-2xl p-8 bg-white rounded-lg shadow-xl"
+    (click)="$event.stopPropagation()"
+  >
+    <!-- Modal Header -->
+    <div class="flex items-start justify-between pb-4 border-b border-gray-200">
+      <div>
+        <h3 class="text-xl font-semibold text-gray-900">Gérer la Poursuite</h3>
+        <p class="text-sm text-gray-500">
+          Ordre N°:
+          <span class="font-bold">{{ selectedPoursuite.numeroOrdre }}</span>
+          pour <span class="font-bold">{{ selectedPoursuite.redevable }}</span>
+        </p>
+      </div>
+      <button
+        (click)="closeModal()"
+        class="p-1 text-gray-400 rounded-full hover:bg-gray-200 hover:text-gray-600"
+      >
+        ×
+      </button>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-6">
+      <!-- Left side: Historique -->
+      <div>
+        <h4 class="font-semibold text-gray-700">Historique des Actions</h4>
+        <div class="mt-4 space-y-4 border-l-2 border-gray-200 pl-4">
+          <div
+            *ngIf="selectedPoursuite.historiqueActions.length === 0"
+            class="text-sm text-gray-500"
+          >
+            Aucune action n'a encore été prise.
+          </div>
+          <div
+            *ngFor="let action of selectedPoursuite.historiqueActions"
+            class="relative"
+          >
+            <span
+              class="absolute -left-[23px] top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-green-500 ring-4 ring-white"
+            >
+              <svg
+                class="h-2 w-2 text-white"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clip-rule="evenodd"
+                ></path>
+              </svg>
+            </span>
+            <p class="font-semibold text-gray-800">{{ action.type }}</p>
+            <p class="text-sm text-gray-500">
+              {{ action.dateAction | date : "dd/MM/yyyy à HH:mm" }} par
+              {{ action.agent }}
+            </p>
+            <p *ngIf="action.documentRef" class="text-xs text-blue-600">
+              Réf: {{ action.documentRef }}
+            </p>
+          </div>
+        </div>
+      </div>
+      <!-- Right side: Actions disponibles -->
+      <div>
+        <h4 class="font-semibold text-gray-700">Actions Disponibles</h4>
+        <div class="mt-4 space-y-3">
+          <button
+            (click)="executeAction('Sommation sans frais')"
+            [disabled]="selectedPoursuite.etapeActuelle !== 'À traiter'"
+            class="w-full flex items-center gap-3 p-3 text-left font-medium text-gray-700 bg-gray-50 rounded-lg border border-gray-200 hover:bg-gray-100 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
+          >
+            <svg
+              class="w-5 h-5"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m21.75 0l-9-5.25L3 6.75m21.75 0v-2.25a2.25 2.25 0 00-2.25-2.25h-15a2.25 2.25 0 00-2.25 2.25v2.25"
+              />
+            </svg>
+            <span>Lancer une Sommation</span>
+          </button>
+          <button
+            (click)="executeAction('Copie de Titre')"
+            [disabled]="selectedPoursuite.etapeActuelle !== 'Sommation envoyée'"
+            class="w-full flex items-center gap-3 p-3 text-left font-medium text-gray-700 bg-gray-50 rounded-lg border border-gray-200 hover:bg-gray-100 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
+          >
+            <svg
+              class="w-5 h-5"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m9.375 0a9.06 9.06 0 00-9.375 0"
+              />
+            </svg>
+            <span>Établir Copie de Titre</span>
+          </button>
+          <button
+            (click)="executeAction('Avis à Tiers Détenteur (ATD)')"
+            [disabled]="selectedPoursuite.etapeActuelle !== 'Sommation envoyée'"
+            class="w-full flex items-center gap-3 p-3 text-left font-medium text-red-700 bg-red-50 rounded-lg border border-red-200 hover:bg-red-100 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
+          >
+            <svg
+              class="w-5 h-5"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M3.75 3v11.25A2.25 2.25 0 006 16.5h12A2.25 2.25 0 0020.25 14.25V3M3.75 21h16.5M12 3v18"
+              />
+            </svg>
+            <span>Émettre un ATD</span>
+          </button>
+          <button
+            (click)="executeAction('Mainlevée émise')"
+            [disabled]="selectedPoursuite.etapeActuelle !== 'ATD émis'"
+            class="w-full flex items-center gap-3 p-3 text-left font-medium text-green-700 bg-green-50 rounded-lg border border-green-200 hover:bg-green-100 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
+          >
+            <svg
+              class="w-5 h-5"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M13.5 10.5V6.75a1.5 1.5 0 113 0v3.75m-3 0V3.75A1.5 1.5 0 0112 2.25v1.5m-3 0V3.75A1.5 1.5 0 017.5 2.25v1.5m3 0V6.75m0 3.75H6.75A1.5 1.5 0 005.25 12v1.5a1.5 1.5 0 001.5 1.5H9v1.5a1.5 1.5 0 001.5 1.5h1.5a1.5 1.5 0 001.5-1.5v-1.5H18a1.5 1.5 0 001.5-1.5v-1.5a1.5 1.5 0 00-1.5-1.5H13.5z"
+              />
+            </svg>
+            <span>Créer Mainlevée</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
