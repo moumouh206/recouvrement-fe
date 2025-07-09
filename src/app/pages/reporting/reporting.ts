@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule, DatePipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 // --- Interfaces for our Report Definitions ---
@@ -26,7 +26,7 @@ interface Report {
 @Component({
   selector: 'app-reporting',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, DatePipe],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './reporting.html',
   styleUrl: './reporting.css',
 })

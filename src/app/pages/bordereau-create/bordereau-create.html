@@ -1,246 +1,488 @@
-<form [formGroup]="bordereauForm" (ngSubmit)="onSubmit()" class="space-y-8">
+<div class="space-y-8">
   <!-- Page Header -->
-  <div class="flex items-center justify-between">
-    <div>
-      <h1 class="text-3xl font-bold text-gray-800">
-        Créer un Nouveau Bordereau
-      </h1>
-      <p class="mt-1 text-gray-500">
-        Remplissez les informations du bordereau et ajoutez les ordres de
-        recette.
-      </p>
-    </div>
+  <div>
+    <h1 class="text-3xl font-bold text-gray-800">Créer un Nouveau Bordereau</h1>
+    <p class="mt-1 text-gray-500">
+      Suivez les étapes pour créer le bordereau et ajouter ses ordres de
+      recette.
+    </p>
   </div>
 
-  <!-- Section 1: Informations Générales du Bordereau -->
-  <div class="p-6 bg-white rounded-lg shadow-sm">
-    <h2
-      class="text-xl font-semibold text-gray-700 border-b border-gray-100 pb-3 mb-6"
-    >
-      Informations Générales
-    </h2>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      <!-- Ordonnateur -->
-      <div>
-        <label for="ordonnateur" class="block text-sm font-medium text-gray-700"
-          >Ordonnateur</label
-        >
-        <input
-          type="text"
-          id="ordonnateur"
-          formControlName="ordonnateur"
-          class="w-full px-3 py-2 mt-1 text-gray-800 bg-gray-50 border border-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-[#187181]"
-        />
-      </div>
-      <!-- Nature Budget -->
-      <div>
-        <label
-          for="natureBudget"
-          class="block text-sm font-medium text-gray-700"
-          >Nature Budget</label
-        >
-        <select
-          id="natureBudget"
-          formControlName="natureBudget"
-          class="w-full px-3 py-2 mt-1 text-gray-800 bg-gray-50 border border-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-[#187181]"
-        >
-          <option value="" disabled>Sélectionner...</option>
-          <option value="Budget d'État">Budget d'État</option>
-          <option value="Budget EPA">Budget EPA</option>
-          <option value="Budget Wilaya">Budget Wilaya</option>
-          <option value="Comptes Spéciaux">Comptes Spéciaux</option>
-        </select>
-      </div>
-      <!-- Type -->
-      <div>
-        <label for="type" class="block text-sm font-medium text-gray-700"
-          >Type</label
-        >
-        <select
-          id="type"
-          formControlName="type"
-          class="w-full px-3 py-2 mt-1 text-gray-800 bg-gray-50 border border-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-[#187181]"
-        >
-          <option value="Prise en charge">Prise en charge</option>
-          <option value="Réduction">Réduction</option>
-          <option value="Non-valeur">Non-valeur</option>
-        </select>
-      </div>
-      <!-- Date Prise en Charge -->
-      <div>
-        <label
-          for="datePriseEnCharge"
-          class="block text-sm font-medium text-gray-700"
-          >Date Prise en Charge</label
-        >
-        <input
-          type="date"
-          id="datePriseEnCharge"
-          formControlName="datePriseEnCharge"
-          class="w-full px-3 py-2 mt-1 text-gray-800 bg-gray-50 border border-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-[#187181]"
-        />
-      </div>
-    </div>
-  </div>
-
-  <!-- Section 2: Ordres de Recette (FormArray) -->
-  <div class="space-y-6" formArrayName="ordres">
-    <h2 class="text-xl font-semibold text-gray-700">Ordres de Recette</h2>
-    <!-- Loop over each 'Ordre' FormGroup in the 'ordres' FormArray -->
-    <div
-      *ngFor="let ordreGroup of ordres.controls; let i = index"
-      [formGroupName]="i"
-      class="p-6 bg-white rounded-lg shadow-sm border border-gray-100"
-    >
-      <div
-        class="flex items-center justify-between pb-3 mb-4 border-b border-gray-100"
+  <!-- Stepper Navigation -->
+  <div class="border border-gray-200 rounded-lg p-4 bg-white">
+    <ol class="flex items-center w-full">
+      <li
+        [ngClass]="{ 'after:border-[#187181]': currentStep === 'step2' }"
+        class="flex w-full items-center text-[#187181] after:content-[''] after:w-full after:h-1 after:border-b after:border-gray-200 after:border-4 after:inline-block"
       >
-        <h3 class="font-semibold text-gray-800">
-          Ordre de Recette #{{ i + 1 }}
-        </h3>
-        <button
-          type="button"
-          (click)="removeOrdre(i)"
-          title="Supprimer cet ordre"
-          class="p-1 text-red-600 rounded hover:bg-red-100"
+        <span
+          class="flex items-center justify-center w-10 h-10 bg-[#187181] rounded-full lg:h-12 lg:w-12 shrink-0"
         >
           <svg
-            class="w-5 h-5"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="1.5"
-            stroke="currentColor"
+            class="w-4 h-4 text-white lg:w-6 lg:h-6"
+            fill="currentColor"
+            viewBox="0 0 20 20"
           >
             <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+              d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.052-.143z"
             />
           </svg>
-        </button>
+        </span>
+      </li>
+      <li class="flex items-center">
+        <span
+          [ngClass]="{
+            'bg-[#187181]': currentStep === 'step2',
+            'bg-gray-100': currentStep === 'step1'
+          }"
+          class="flex items-center justify-center w-10 h-10 rounded-full lg:h-12 lg:w-12 shrink-0"
+        >
+          <svg
+            [ngClass]="{
+              'text-white': currentStep === 'step2',
+              'text-gray-500': currentStep === 'step1'
+            }"
+            class="w-4 h-4 lg:w-6 lg:h-6"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-13a.75.75 0 00-1.5 0v5c0 .414.336.75.75.75h4a.75.75 0 000-1.5h-3.25V5z"
+              clip-rule="evenodd"
+            />
+          </svg>
+        </span>
+      </li>
+    </ol>
+  </div>
+
+  <!-- Step 1: Bordereau Form -->
+  <div
+    *ngIf="currentStep === 'step1'"
+    class="bg-white p-8 rounded-lg focus:border-[#187181] border border-gray-200"
+  >
+    <form [formGroup]="bordereauForm" class="space-y-6">
+      <h2 class="text-xl font-semibold text-gray-800">
+        Étape 1: Informations du Bordereau
+      </h2>
+      <!-- Row 1 -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div>
+          <label class="block text-sm font-medium text-gray-700"
+            >N° Bordereau</label
+          ><input
+            type="text"
+            formControlName="num_bord"
+            class="w-full mt-1 px-3 py-2 bg-white border border-gray-300 rounded-md focus:border-[#187181] focus:outline-none focus:ring-[#187181] focus:border-[#187181]"
+          />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700"
+            >Date d'Émission</label
+          ><input
+            type="date"
+            formControlName="date_emission"
+            class="w-full mt-1 px-3 py-2 bg-white border border-gray-300 rounded-md focus:border-[#187181] focus:outline-none focus:ring-[#187181] focus:border-[#187181]"
+          />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700"
+            >Montant Brut Déclaré (DZD)</label
+          ><input
+            type="number"
+            formControlName="montant_brd"
+            class="w-full mt-1 px-3 py-2 bg-white border border-gray-300 rounded-md focus:border-[#187181] focus:outline-none focus:ring-[#187181] focus:border-[#187181]"
+          />
+        </div>
       </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <input
-          type="text"
-          formControlName="numeroOrdre"
-          placeholder="Numéro de l'ordre"
-          class="w-full px-3 py-2 text-gray-800 bg-gray-50 border border-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-[#187181]"
-        />
-        <app-redevable-lookup
-          formControlName="redevableId"
-        ></app-redevable-lookup>
+      <!-- Row 2 -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div>
+          <label class="block text-sm font-medium text-gray-700"
+            >Poste Comptable</label
+          ><input
+            type="text"
+            formControlName="poste_comptable"
+            placeholder="Code du poste..."
+            class="w-full mt-1 px-3 py-2 bg-white border border-gray-300 rounded-md focus:border-[#187181] focus:outline-none focus:ring-[#187181] focus:border-[#187181]"
+          />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700"
+            >Compte Budget</label
+          ><select
+            formControlName="id_compte_Ref_Compte_Budget"
+            class="w-full mt-1 px-3 py-2 bg-white border border-gray-300 rounded-md focus:border-[#187181] focus:outline-none focus:ring-[#187181] focus:border-[#187181]"
+          >
+            <option value="" disabled>Sélectionner...</option>
+            <option value="212008">212008</option>
+            <option value="201007">201007</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700"
+            >Nature Budget</label
+          ><select
+            formControlName="id_nat_budget"
+            class="w-full mt-1 px-3 py-2 bg-white border border-gray-300 rounded-md focus:border-[#187181] focus:outline-none focus:ring-[#187181] focus:border-[#187181]"
+          >
+            <option value="" disabled>Sélectionner...</option>
+            <option value="1">Budget d'État</option>
+            <option value="2">Budget EPA</option>
+            <option value="3">Budget Wilaya</option>
+            <option value="4">Comptes Spéciaux</option>
+          </select>
+        </div>
+      </div>
+      <!-- Row 3 -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div>
+          <label class="block text-sm font-medium text-gray-700"
+            >Nature Recette</label
+          ><input
+            type="text"
+            formControlName="nature_recette"
+            placeholder="Ex: Produit fiscal..."
+            class="w-full mt-1 px-3 py-2 bg-white border border-gray-300 rounded-md focus:border-[#187181] focus:outline-none focus:ring-[#187181] focus:border-[#187181]"
+          />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700"
+            >Mode de Recette</label
+          ><select
+            formControlName="ID_MODE_RCT"
+            class="w-full mt-1 px-3 py-2 bg-white border border-gray-300 rounded-md focus:border-[#187181] focus:outline-none focus:ring-[#187181] focus:border-[#187181]"
+          >
+            <option value="" disabled>Sélectionner...</option>
+            <option value="1">Ordre de Recette</option>
+            <option value="2">Arrêt Débet et Amende</option>
+            <option value="3">Prêt Véhicule</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700"
+            >Type de Recette</label
+          ><select
+            formControlName="ID_TYPE_RCT"
+            class="w-full mt-1 px-3 py-2 bg-white border border-gray-300 rounded-md focus:border-[#187181] focus:outline-none focus:ring-[#187181] focus:border-[#187181]"
+          >
+            <option>Prise en charge</option>
+            <option>Réduction</option>
+            <option>Non-valeur</option>
+          </select>
+        </div>
       </div>
 
-      <!-- Section 2.1: Lignes de Recette (Nested FormArray) -->
-      <div
-        class="mt-6 pl-4 border-l-2 border-gray-100 space-y-4"
-        formArrayName="lignes"
-      >
-        <h4 class="text-md font-semibold text-gray-600">Lignes de l'Ordre</h4>
-        <!-- Loop over each 'Ligne' FormGroup in the nested 'lignes' FormArray -->
-        <div
-          *ngFor="let ligneGroup of lignes(i).controls; let j = index"
-          [formGroupName]="j"
-          class="flex items-center gap-4"
-        >
-          <input
+      <hr class="my-4 border-gray-200" />
+      <h3 class="text-lg font-semibold text-gray-600">Axes Analytiques</h3>
+      <!-- Row 4 -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div>
+          <label class="block text-sm font-medium text-gray-700"
+            >Axe Adm. (Ordonnateur)</label
+          ><select
+            formControlName="ID_AXE_ADM"
+            class="w-full mt-1 px-3 py-2 bg-white border border-gray-300 rounded-md focus:border-[#187181] focus:outline-none focus:ring-[#187181] focus:border-[#187181]"
+          >
+            <option value="" disabled>Sélectionner...</option>
+            <option value="1">Ministère Éducation</option>
+            <option value="2">DGI</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700"
+            >Axe Économique (Ligne TR5)</label
+          ><input
             type="text"
-            formControlName="categorie"
-            placeholder="Catégorie (ex: Ligne TR5)"
-            class="flex-1 px-3 py-2 text-gray-800 bg-white border border-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-[#187181]"
+            formControlName="ID_AXE_ECO"
+            placeholder="Ligne TR5 ou Catégorie..."
+            class="w-full mt-1 px-3 py-2 bg-white border border-gray-300 rounded-md focus:border-[#187181] focus:outline-none focus:ring-[#187181] focus:border-[#187181]"
           />
-          <input
-            type="number"
-            formControlName="montant"
-            placeholder="Montant"
-            class="w-48 px-3 py-2 text-gray-800 bg-white border border-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-[#187181]"
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700"
+            >Axe Programme (Optionnel)</label
+          ><input
+            type="text"
+            formControlName="ID_AXE_PROG"
+            class="w-full mt-1 px-3 py-2 bg-white border border-gray-300 rounded-md focus:border-[#187181] focus:outline-none focus:ring-[#187181] focus:border-[#187181]"
           />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700"
+            >Chapitre (Pour EPA/Wilaya)</label
+          ><input
+            type="text"
+            formControlName="id_chapitre"
+            class="w-full mt-1 px-3 py-2 bg-white border border-gray-300 rounded-md focus:border-[#187181] focus:outline-none focus:ring-[#187181] focus:border-[#187181]"
+          />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700"
+            >Type de Chargement</label
+          ><select
+            formControlName="type_chargement"
+            class="w-full mt-1 px-3 py-2 bg-white border border-gray-300 rounded-md focus:border-[#187181] focus:outline-none focus:ring-[#187181] focus:border-[#187181]"
+          >
+            <option>Manuel</option>
+            <option>Portail</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="flex justify-end pt-6 border-t border-gray-200">
+        <button
+          type="button"
+          (click)="goToStep2()"
+          [disabled]="bordereauForm.invalid"
+          class="px-6 py-2 font-semibold text-white bg-[#187181] rounded-lg hover:opacity-90 disabled:opacity-50"
+        >
+          Suivant: Ajouter les Ordres
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Step 2: Orders Management -->
+  <div *ngIf="currentStep === 'step2'" class="space-y-8">
+    <!-- Validation and Progress Bar -->
+    <div class="p-4 bg-white rounded-lg focus:border-[#187181] border border-gray-200">
+      <h3 class="font-semibold text-gray-800">Validation des Montants</h3>
+      <div class="mt-2 grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
+        <div>
+          <p class="text-sm text-gray-500">Montant Déclaré</p>
+          <p class="text-lg font-bold font-mono text-gray-900">
+            {{
+              bordereauForm.get("montant_brd")?.value
+                | currency : "DZD" : "symbol" : "1.2-2"
+            }}
+          </p>
+        </div>
+        <div>
+          <p class="text-sm text-gray-500">Montant des Ordres</p>
+          <p class="text-lg font-bold font-mono text-sky-600">
+            {{ totalAmountOfOrders | currency : "DZD" : "symbol" : "1.2-2" }}
+          </p>
+        </div>
+        <div>
+          <p class="text-sm text-gray-500">Restant à Imputer</p>
+          <p
+            class="text-lg font-bold font-mono"
+            [ngClass]="
+              remainingAmount !== 0 ? 'text-pink-600' : 'text-green-600'
+            "
+          >
+            {{ remainingAmount | currency : "DZD" : "symbol" : "1.2-2" }}
+          </p>
+        </div>
+      </div>
+      <div class="mt-4 w-full bg-gray-200 rounded-full h-2.5">
+        <div
+          class="bg-sky-600 h-2.5 rounded-full transition-all duration-300"
+          [style.width.%]="
+            (totalAmountOfOrders / bordereauForm.get('montant_brd')?.value) *
+            100
+          "
+        ></div>
+      </div>
+    </div>
+
+    <!-- Form for Adding a New Order -->
+    <div class="p-8 bg-white rounded-lg focus:border-[#187181] border border-gray-200">
+      <form
+        [formGroup]="ordreForm"
+        (ngSubmit)="addOrdreToList()"
+        class="space-y-6"
+      >
+        <div class="flex justify-between items-center">
+          <h2 class="text-xl font-semibold text-gray-800">
+            Ajouter un Ordre de Recette
+          </h2>
+          <div class="font-semibold">
+            Total de l'ordre:
+            <span class="ml-2 font-mono text-sky-600">{{
+              calculateOrdreTotal() | currency : "DZD" : "symbol" : "1.2-2"
+            }}</span>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label class="block text-sm font-medium text-gray-700"
+              >N° Ordre de Recette</label
+            ><input
+              type="text"
+              formControlName="numeroOrdre"
+              class="w-full mt-1 px-3 py-2 bg-white border border-gray-300 rounded-md focus:border-[#187181] focus:outline-none focus:ring-[#187181] focus:border-[#187181]"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700"
+              >Redevable</label
+            ><app-redevable-lookup
+              formControlName="redevableId"
+              class="mt-1"
+            ></app-redevable-lookup>
+          </div>
+        </div>
+        <div class="pl-4 border-l-2 border-gray-200 space-y-4">
+          <h4 class="text-md font-semibold text-gray-600">
+            Détails/Lignes de l'Ordre
+          </h4>
+          <div formArrayName="lignes">
+            <div
+              *ngFor="let ligne of lignes.controls; let i = index"
+              [formGroupName]="i"
+              class="flex items-end gap-4"
+            >
+              <div class="flex-grow">
+                <label class="block text-sm font-medium text-gray-700"
+                  >Catégorie</label
+                ><input
+                  type="text"
+                  formControlName="categorie"
+                  class="w-full mt-1 px-3 py-2 bg-white border border-gray-300 rounded-md focus:border-[#187181] focus:outline-none focus:ring-[#187181] focus:border-[#187181]"
+                />
+              </div>
+              <div class="w-48">
+                <label class="block text-sm font-medium text-gray-700"
+                  >Montant</label
+                ><input
+                  type="number"
+                  formControlName="montant"
+                  class="w-full mt-1 px-3 py-2 bg-white border border-gray-300 rounded-md focus:border-[#187181] focus:outline-none focus:ring-[#187181] focus:border-[#187181]"
+                />
+              </div>
+              <button
+                type="button"
+                (click)="removeLigne(i)"
+                title="Supprimer cette ligne"
+                class="p-2 text-pink-500 bg-white border border-gray-300 rounded-md hover:bg-pink-50"
+              >
+                <svg
+                  class="w-5 h-5"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
           <button
             type="button"
-            (click)="removeLigne(i, j)"
-            title="Supprimer cette ligne"
-            class="p-1 text-red-500 rounded hover:bg-red-100"
+            (click)="addLigne()"
+            class="text-sm font-medium text-[#187181] hover:underline"
           >
-            <svg
-              class="w-5 h-5"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="2"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M19.5 12h-15"
-              />
-            </svg>
+            + Ajouter une ligne
           </button>
         </div>
-        <button
-          type="button"
-          (click)="addLigne(i)"
-          class="flex items-center gap-2 px-3 py-1 text-sm font-medium text-[#187181] rounded-md hover:bg-teal-50"
-        >
-          <svg
-            class="w-4 h-4"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="2"
-            stroke="currentColor"
+        <div class="text-right">
+          <button
+            type="submit"
+            [disabled]="!ordreForm.valid"
+            class="px-6 py-2 font-semibold text-white bg-sky-600 rounded-lg hover:bg-sky-700 disabled:opacity-50"
           >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M12 4.5v15m7.5-7.5h-15"
-            />
-          </svg>
-          Ajouter une Ligne
-        </button>
+            Ajouter l'Ordre
+          </button>
+        </div>
+      </form>
+    </div>
+    <!-- List of Added Orders -->
+    <div class="p-8 bg-white rounded-lg focus:border-[#187181] border border-gray-200">
+      <h2 class="text-xl font-semibold text-gray-800">
+        Ordres Ajoutés au Bordereau ({{ ordresDuBordereau.length }})
+      </h2>
+      <div
+        *ngIf="ordresDuBordereau.length === 0"
+        class="mt-4 text-center text-gray-500 p-8 bg-gray-50 rounded-lg"
+      >
+        Aucun ordre ajouté pour le moment.
+      </div>
+      <div *ngIf="ordresDuBordereau.length > 0" class="mt-4 -mx-4">
+        <table class="min-w-full">
+          <thead class="bg-gray-50">
+            <tr>
+              <th
+                class="px-4 py-2 text-left text-sm font-semibold text-gray-600"
+              >
+                N° Ordre
+              </th>
+              <th
+                class="px-4 py-2 text-left text-sm font-semibold text-gray-600"
+              >
+                Redevable
+              </th>
+              <th
+                class="px-4 py-2 text-right text-sm font-semibold text-gray-600"
+              >
+                Montant
+              </th>
+              <th
+                class="px-4 py-2 text-center text-sm font-semibold text-gray-600"
+              >
+                Action
+              </th>
+            </tr>
+          </thead>
+          <tbody class="bg-white">
+            <tr
+              *ngFor="let ordre of ordresDuBordereau"
+              class="border-b border-gray-200"
+            >
+              <td class="px-4 py-2 font-medium text-gray-900">
+                {{ ordre.numeroOrdre }}
+              </td>
+              <td class="px-4 py-2 text-gray-600">{{ ordre.redevableNom }}</td>
+              <td class="px-4 py-2 text-right font-mono font-semibold">
+                {{ ordre.montantTotal | currency : "DZD" : "symbol" : "1.2-2" }}
+              </td>
+              <td class="px-4 py-2 text-center">
+                <button
+                  (click)="removeOrdreFromList(ordre.id)"
+                  title="Supprimer cet ordre"
+                  class="p-1 text-pink-500 rounded-full hover:bg-red-100"
+                >
+                  <svg
+                    class="w-5 h-5"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M8.75 1A2.75 2.75 0 006 3.75v.443c-.795.077-1.58.22-2.365.468a.75.75 0 10.23 1.482l.149-.022.841 10.518A2.75 2.75 0 007.596 19h4.807a2.75 2.75 0 002.742-2.53l.841-10.52.149.023a.75.75 0 00.23-1.482A41.03 41.03 0 0014 4.193V3.75A2.75 2.75 0 0011.25 1h-2.5zM10 4c.84 0 1.673.025 2.5.075V3.75c0-.69-.56-1.25-1.25-1.25h-2.5c-.69 0-1.25.56-1.25 1.25V4c.827-.05 1.66-.075 2.5-.075zM8.47 9.03a.75.75 0 00-1.084-1.032l-.25.25a.75.75 0 101.084 1.032l.25-.25zM10 9a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 9zm3.39 1.03a.75.75 0 00-1.084-1.032l-.25.25a.75.75 0 101.084 1.032l.25-.25z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
-
-    <!-- Button to add a new 'Ordre' -->
-    <button
-      type="button"
-      (click)="addOrdre()"
-      class="w-full flex items-center justify-center gap-2 px-4 py-2 font-semibold text-[#187181] transition-colors bg-white border-2 border-dashed border-gray-100 rounded-lg hover:bg-gray-50 hover:border-[#187181]"
+    <!-- Final Actions -->
+    <div
+      class="flex items-center justify-between pt-4 border-t border-gray-200"
     >
-      <svg
-        class="w-5 h-5"
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke-width="2"
-        stroke="currentColor"
+      <button
+        type="button"
+        (click)="goToStep1()"
+        class="px-6 py-2 font-semibold text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200"
       >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          d="M12 4.5v15m7.5-7.5h-15"
-        />
-      </svg>
-      Ajouter un Ordre de Recette
-    </button>
+        Précédent
+      </button>
+      <button
+        (click)="submitAll()"
+        class="px-8 py-3 font-bold text-white bg-green-600 rounded-lg hover:bg-green-700 disabled:opacity-50"
+        [disabled]="remainingAmount !== 0 || ordresDuBordereau.length === 0"
+      >
+        Terminer et Valider le Bordereau
+      </button>
+    </div>
   </div>
-
-  <!-- Section 3: Final Actions -->
-  <div
-    class="flex items-center justify-end gap-4 pt-4 border-t border-gray-300"
-  >
-    <a
-      [routerLink]="['/bordereaux']"
-      class="px-6 py-2 font-semibold text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200"
-      >Annuler</a
-    >
-    <button
-      type="submit"
-      class="px-6 py-2 font-semibold text-white bg-[#187181] rounded-lg hover:opacity-90 disabled:opacity-50"
-      [disabled]="!bordereauForm.valid"
-    >
-      Soumettre le Bordereau
-    </button>
-  </div>
-</form>
+</div>

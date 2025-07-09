@@ -14,3 +14,8 @@
     </main>
   </div>
 </div>
+
+<app-exercice-selector-modal
+  *ngIf="showExerciceModal"
+  (exerciceSelected)="onExerciceSelected()"
+></app-exercice-selector-modal>

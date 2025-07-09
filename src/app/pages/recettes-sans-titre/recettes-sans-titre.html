@@ -3,13 +3,25 @@
   <div>
     <h1 class="text-3xl font-bold text-gray-800">Recettes sans Titre</h1>
     <p class="mt-1 text-gray-500">
-      Consignez les recettes perçues sans ordre, puis régularisez-les.
+      Enregistrez les recettes perçues sans ordre de recette associé.
     </p>
   </div>
 
   <!-- Tab Navigation -->
   <div class="border-b border-gray-200">
     <nav class="-mb-px flex gap-6" aria-label="Tabs">
+      <button
+        (click)="selectTab('directe')"
+        [ngClass]="{
+          'border-[#187181] text-[#187181] font-semibold':
+            activeTab === 'directe',
+          'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300':
+            activeTab !== 'directe'
+        }"
+        class="px-1 py-4 text-sm font-medium border-b-2"
+      >
+        Imputation Directe
+      </button>
       <button
         (click)="selectTab('consignation')"
         [ngClass]="{
@@ -20,222 +32,297 @@
         }"
         class="px-1 py-4 text-sm font-medium border-b-2"
       >
-        1. Consigner une Recette
-      </button>
-      <button
-        (click)="selectTab('regularisation')"
-        [ngClass]="{
-          'border-[#187181] text-[#187181] font-semibold':
-            activeTab === 'regularisation',
-          'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300':
-            activeTab !== 'regularisation'
-        }"
-        class="px-1 py-4 text-sm font-medium border-b-2"
-      >
-        2. Régulariser les Recettes en Attente
+        Gestion des Consignations
       </button>
     </nav>
   </div>
 
   <!-- Tab Content -->
   <div>
-    <!-- Tab 1: Formulaire de Consignation -->
-    <div *ngIf="activeTab === 'consignation'" class="max-w-2xl mx-auto">
+    <!-- Tab 1: Formulaire d'Imputation Directe -->
+    <div *ngIf="activeTab === 'directe'">
       <form
-        [formGroup]="consignationForm"
-        (ngSubmit)="submitConsignation()"
-        class="p-8 space-y-6 bg-white rounded-lg shadow-sm"
+        [formGroup]="imputationDirecteForm"
+        (ngSubmit)="submitImputationDirecte()"
+        class="p-8 space-y-6 bg-white rounded-lg shadow-sm max-w-2xl mx-auto"
       >
         <h2 class="text-xl font-semibold text-gray-800">
-          Détails de la recette à consigner
+          Enregistrer une Recette à Imputation Définitive
         </h2>
+        <p class="text-sm text-gray-500">
+          Pour les recettes (Justice, Douane, Domaine) ne nécessitant pas de
+          consignation.
+        </p>
         <div>
-          <label for="montant" class="block text-sm font-medium text-gray-700"
+          <label
+            for="montantDirecte"
+            class="block text-sm font-medium text-gray-700"
             >Montant (DZD)</label
           >
           <input
             type="number"
-            id="montant"
+            id="montantDirecte"
             formControlName="montant"
             class="w-full px-3 py-2 mt-1 text-gray-800 bg-gray-50 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#187181]"
           />
         </div>
         <div>
           <label
-            for="provenance"
+            for="provenanceDirecte"
             class="block text-sm font-medium text-gray-700"
             >Provenance</label
           >
           <select
-            id="provenance"
+            id="provenanceDirecte"
             formControlName="provenance"
             class="w-full px-3 py-2 mt-1 text-gray-800 bg-gray-50 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#187181]"
           >
-            <option value="" disabled>Sélectionner...</option>
-            <option value="Justice">Justice</option>
-            <option value="Douane">Douane</option>
-            <option value="Domaine">Domaine</option>
-            <option value="Autre">Autre</option>
+            <option>Justice</option>
+            <option>Douane</option>
+            <option>Domaine</option>
           </select>
         </div>
         <div>
-          <label for="motif" class="block text-sm font-medium text-gray-700"
-            >Motif de la recette</label
+          <label
+            for="compteImputation"
+            class="block text-sm font-medium text-gray-700"
+            >Compte d'Imputation Définitif</label
+          >
+          <input
+            type="text"
+            id="compteImputation"
+            formControlName="compteImputation"
+            placeholder="Ex: 702101 - Amendes"
+            class="w-full px-3 py-2 mt-1 text-gray-800 bg-gray-50 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#187181]"
+          />
+        </div>
+        <div>
+          <label
+            for="motifDirecte"
+            class="block text-sm font-medium text-gray-700"
+            >Motif</label
           >
           <textarea
-            id="motif"
+            id="motifDirecte"
             formControlName="motif"
-            rows="3"
-            placeholder="Ex: Amende transactionnelle, vente aux enchères..."
+            rows="2"
             class="w-full px-3 py-2 mt-1 text-gray-800 bg-gray-50 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#187181]"
           ></textarea>
         </div>
         <div>
           <label
-            for="dateConsignation"
+            for="dateDirecte"
             class="block text-sm font-medium text-gray-700"
-            >Date de Consignation</label
+            >Date de la Recette</label
           >
           <input
             type="date"
-            id="dateConsignation"
-            formControlName="dateConsignation"
+            id="dateDirecte"
+            formControlName="date"
             class="w-full px-3 py-2 mt-1 text-gray-800 bg-gray-50 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#187181]"
           />
         </div>
         <div class="pt-4 border-t border-gray-200">
           <button
             type="submit"
-            [disabled]="consignationForm.invalid"
+            [disabled]="imputationDirecteForm.invalid"
             class="w-full flex justify-center px-6 py-3 font-semibold text-white bg-[#187181] rounded-lg hover:opacity-90 disabled:opacity-50"
           >
-            Consigner et Passer à la Régularisation
+            Enregistrer l'Imputation
           </button>
         </div>
       </form>
     </div>
 
-    <!-- Tab 2: Liste pour Régularisation -->
-    <div *ngIf="activeTab === 'regularisation'">
-      <div class="overflow-x-auto bg-white rounded-lg shadow-sm">
-        <table class="w-full text-sm text-left text-gray-500">
-          <thead class="text-xs text-gray-700 uppercase bg-gray-50">
-            <tr>
-              <th scope="col" class="px-6 py-3">Date Consignation</th>
-              <th scope="col" class="px-6 py-3">Provenance</th>
-              <th scope="col" class="px-6 py-3">Motif</th>
-              <th scope="col" class="px-6 py-3 text-right">Montant (DZD)</th>
-              <th scope="col" class="px-6 py-3 text-center">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr
-              *ngFor="let c of consignationsEnAttente"
-              class="bg-white border-b border-gray-200 hover:bg-gray-50"
+    <!-- Tab 2: Gestion des Consignations -->
+    <div
+      *ngIf="activeTab === 'consignation'"
+      class="grid grid-cols-1 lg:grid-cols-5 gap-8"
+    >
+      <!-- Part A: Form to add new consignation -->
+      <div class="lg:col-span-2">
+        <form
+          [formGroup]="consignationForm"
+          (ngSubmit)="submitConsignation()"
+          class="p-6 space-y-4 bg-white rounded-lg shadow-sm sticky top-8"
+        >
+          <h2 class="text-xl font-semibold text-gray-800">
+            Consigner une Nouvelle Recette
+          </h2>
+          <p class="text-sm text-gray-500">
+            Pour les recettes en attente de la création d'un titre.
+          </p>
+          <div>
+            <label
+              for="montantCons"
+              class="block text-sm font-medium text-gray-700"
+              >Montant (DZD)</label
             >
-              <td class="px-6 py-4">
-                {{ c.dateConsignation | date : "dd/MM/yyyy" }}
-              </td>
-              <td class="px-6 py-4">{{ c.provenance }}</td>
-              <td class="px-6 py-4">{{ c.motif }}</td>
-              <td class="px-6 py-4 text-right font-mono font-bold">
-                {{ c.montant | currency : "DZD " : "symbol" : "1.2-2" }}
-              </td>
-              <td class="px-6 py-4 text-center">
-                <button
-                  (click)="openRegularisationModal(c)"
-                  class="px-3 py-1 text-sm font-semibold text-white bg-green-600 rounded-lg hover:bg-green-700"
-                >
-                  Régulariser
-                </button>
-              </td>
-            </tr>
-            <tr *ngIf="consignationsEnAttente.length === 0">
-              <td colspan="5" class="px-6 py-12 text-center text-gray-500">
-                Aucune recette en attente de régularisation.
-              </td>
-            </tr>
-          </tbody>
-        </table>
+            <input
+              type="number"
+              id="montantCons"
+              formControlName="montant"
+              class="w-full px-3 py-2 mt-1 text-gray-800 bg-gray-50 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#187181]"
+            />
+          </div>
+          <div>
+            <label
+              for="provenanceCons"
+              class="block text-sm font-medium text-gray-700"
+              >Provenance</label
+            >
+            <input
+              type="text"
+              id="provenanceCons"
+              formControlName="provenance"
+              class="w-full px-3 py-2 mt-1 text-gray-800 bg-gray-50 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#187181]"
+            />
+          </div>
+          <div>
+            <label
+              for="motifCons"
+              class="block text-sm font-medium text-gray-700"
+              >Motif</label
+            >
+            <textarea
+              id="motifCons"
+              formControlName="motif"
+              rows="2"
+              class="w-full px-3 py-2 mt-1 text-gray-800 bg-gray-50 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#187181]"
+            ></textarea>
+          </div>
+          <div>
+            <label
+              for="dateCons"
+              class="block text-sm font-medium text-gray-700"
+              >Date de Consignation</label
+            >
+            <input
+              type="date"
+              id="dateCons"
+              formControlName="date"
+              class="w-full px-3 py-2 mt-1 text-gray-800 bg-gray-50 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#187181]"
+            />
+          </div>
+          <div class="pt-4 border-t border-gray-200">
+            <button
+              type="submit"
+              [disabled]="consignationForm.invalid"
+              class="w-full flex justify-center px-6 py-2 font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50"
+            >
+              Ajouter à la liste des consignations
+            </button>
+          </div>
+        </form>
+      </div>
+      <!-- Part B: List of consignations to be linked -->
+      <div class="lg:col-span-3">
+        <div class="overflow-x-auto bg-white rounded-lg shadow-sm">
+          <table class="w-full text-sm text-left text-gray-500">
+            <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+              <tr>
+                <th class="px-6 py-3">Date</th>
+                <th class="px-6 py-3">Motif</th>
+                <th class="px-6 py-3 text-right">Montant</th>
+                <th class="px-6 py-3 text-center">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                *ngFor="let c of consignationsEnAttente"
+                class="bg-white border-b border-gray-200 hover:bg-gray-50"
+              >
+                <td class="px-6 py-4">{{ c.date | date : "dd/MM/yyyy" }}</td>
+                <td class="px-6 py-4">{{ c.motif }}</td>
+                <td class="px-6 py-4 text-right font-mono font-bold">
+                  {{ c.montant | currency : "DZD" : "symbol" : "1.2-2" }}
+                </td>
+                <td class="px-6 py-4 text-center">
+                  <button
+                    (click)="openLinkModal(c)"
+                    class="px-3 py-1 text-sm font-semibold text-white bg-green-600 rounded-lg hover:bg-green-700"
+                  >
+                    Lier à un Titre
+                  </button>
+                </td>
+              </tr>
+              <tr *ngIf="consignationsEnAttente.length === 0">
+                <td colspan="4" class="px-6 py-12 text-center text-gray-500">
+                  Aucune recette en attente de liaison.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Modal Dialog for Regularisation -->
+<!-- Modal Dialog for Linking -->
 <div
-  *ngIf="isModalOpen && selectedConsignation"
-  class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 transition-opacity"
+  *ngIf="isLinkModalOpen && selectedConsignation"
+  class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
 >
   <div
-    class="relative w-full max-w-lg p-8 bg-white rounded-lg shadow-xl"
+    class="relative w-full max-w-xl p-8 bg-white rounded-lg shadow-xl"
     (click)="$event.stopPropagation()"
   >
-    <!-- Modal Header -->
     <div class="flex items-start justify-between pb-4 border-b border-gray-200">
-      <div>
-        <h3 class="text-xl font-semibold text-gray-900">
-          Régulariser une Recette
-        </h3>
-        <p class="text-sm text-gray-500">
-          Lier la recette consignée à un ordre de recette.
-        </p>
-      </div>
+      <h3 class="text-xl font-semibold text-gray-900">
+        Lier la Consignation au Titre de Perception
+      </h3>
       <button
-        (click)="closeModal()"
-        class="p-1 text-gray-400 rounded-full hover:bg-gray-200 hover:text-gray-600"
+        (click)="closeLinkModal()"
+        class="p-1 text-gray-400 rounded-full hover:bg-gray-200"
       >
         ×
       </button>
     </div>
-    <!-- Modal Body -->
-    <form
-      [formGroup]="regularisationForm"
-      (ngSubmit)="submitRegularisation()"
-      class="mt-6 space-y-4"
-    >
-      <div class="p-4 bg-gray-50 rounded-lg">
-        <p class="text-sm text-gray-600">
-          Vous régularisez la recette de
-          <span class="font-bold">{{
-            selectedConsignation.montant | currency : "DZD"
-          }}</span>
-          du
-          <span class="font-bold">{{
-            selectedConsignation.dateConsignation | date : "dd/MM/yyyy"
-          }}</span
-          >.
-        </p>
-      </div>
+    <div class="mt-6 space-y-4">
+      <p class="p-4 bg-gray-50 rounded-lg text-sm">
+        Vous liez la consignation de
+        <span class="font-bold">{{
+          selectedConsignation.montant | currency : "DZD" : "symbol" : "1.2-2"
+        }}</span>
+        pour le motif:
+        <span class="font-bold">"{{ selectedConsignation.motif }}"</span>.
+      </p>
       <div>
-        <label for="numeroOrdre" class="block text-sm font-medium text-gray-700"
-          >Numéro de l'Ordre de Recette associé</label
+        <label for="ordreSearch" class="block text-sm font-medium text-gray-700"
+          >Rechercher le Titre de Perception (par N° ou Redevable)</label
         >
         <input
           type="text"
-          id="numeroOrdre"
-          formControlName="numeroOrdre"
-          placeholder="Ex: TP-2024-REG-301"
-          class="w-full px-3 py-2 mt-1 text-gray-800 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#187181]"
+          id="ordreSearch"
+          [(ngModel)]="ordreSearchTerm"
+          (ngModelChange)="searchOrdre()"
+          class="w-full px-3 py-2 mt-1 text-gray-800 bg-gray-50 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#187181]"
         />
       </div>
-      <!-- Modal Footer -->
-      <div class="flex justify-end gap-4 pt-6 mt-2 border-t border-gray-200">
-        <button
-          type="button"
-          (click)="closeModal()"
-          class="px-6 py-2 font-semibold text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200"
+      <div
+        class="h-48 overflow-y-auto pr-2 space-y-2 border border-gray-200 rounded-md"
+      >
+        <div
+          *ngIf="ordreSearchResults.length === 0 && ordreSearchTerm.length > 1"
+          class="flex items-center justify-center h-full text-sm text-gray-500"
         >
-          Annuler
-        </button>
-        <button
-          type="submit"
-          [disabled]="regularisationForm.invalid"
-          class="px-6 py-2 font-semibold text-white bg-[#187181] rounded-lg hover:opacity-90 disabled:opacity-50"
+          Aucun titre trouvé.
+        </div>
+        <div
+          *ngFor="let ordre of ordreSearchResults"
+          (click)="linkTitre(ordre)"
+          class="p-3 border-b border-gray-200 last:border-b-0 hover:bg-teal-50 cursor-pointer"
         >
-          Valider la Régularisation
-        </button>
+          <p class="font-medium text-gray-800">{{ ordre.numeroOrdre }}</p>
+          <p class="text-sm text-gray-600">
+            {{ ordre.redevable }} -
+            <span class="font-mono">{{
+              ordre.montantInitial | currency : "DZD" : "symbol" : "1.2-2"
+            }}</span>
+          </p>
+        </div>
       </div>
-    </form>
+    </div>
   </div>
 </div>

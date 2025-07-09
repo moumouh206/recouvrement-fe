@@ -1,0 +1,62 @@
+<!-- The overlay makes it modal, preventing clicks behind it -->
+<div
+  class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 backdrop-blur-sm"
+>
+  <div class="relative w-full max-w-lg p-8 bg-white rounded-lg shadow-xl">
+    <!-- Modal Header -->
+    <div class="text-center">
+      <div
+        class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-teal-100"
+      >
+        <svg
+          class="h-6 w-6 text-teal-600"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0h18M12 12.75h.008v.008H12v-.008z"
+          />
+        </svg>
+      </div>
+      <h3 class="mt-4 text-xl font-semibold text-gray-900">
+        Sélection de l'Exercice
+      </h3>
+      <p class="mt-2 text-sm text-gray-500">
+        Veuillez choisir l'exercice sur lequel vous souhaitez travailler pour
+        continuer.
+      </p>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="mt-6">
+      <label for="exercice" class="block text-sm font-medium text-gray-700"
+        >Exercice Fiscal</label
+      >
+      <select
+        id="exercice"
+        [(ngModel)]="selectedExercice"
+        class="w-full mt-1 px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[#187181] focus:border-[#187181]"
+      >
+        <option *ngFor="let year of exercices" [value]="year">
+          {{ year }}
+        </option>
+      </select>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="mt-8">
+      <button
+        (click)="confirmSelection()"
+        [disabled]="!selectedExercice"
+        class="w-full flex justify-center px-6 py-3 font-semibold text-white bg-[#187181] rounded-lg hover:opacity-90 disabled:opacity-50"
+      >
+        Confirmer et Continuer
+      </button>
+    </div>
+  </div>
+</div>
